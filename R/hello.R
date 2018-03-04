@@ -40,9 +40,10 @@
     })->
       ref
     devtools::install_github('beauchamplab/rave', ref = ref)
+    do.call('require', args = list(
+      package = 'rave',
+      character.only = TRUE
+    ))
   }
 }
 
-
-#' @import devtools
-NULL
