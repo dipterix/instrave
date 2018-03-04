@@ -1,9 +1,6 @@
 # package to install RAVE
-
-.onLoad <- function(libname, pkgname){
-  # load RAVE
-
-
+local({
+  install.packages('devtools')
   pkgs = utils::installed.packages()[,1]
   if(!'rave' %in% pkgs){
 
@@ -33,5 +30,5 @@
       character.only = TRUE
     ))
   }
-}
+})
 
