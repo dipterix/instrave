@@ -38,14 +38,20 @@ local({
     apply(imports, 1, function(x){
       tryCatch({
         p = x[2]; v = x[3]
+        if(p == 'stringr'){
+          return('')
+        }
         ni = TRUE
         if(p %in% pkgs){
           if(v == '' || utils::compareVersion(v, as.character(packageVersion(p))) <= 0){
             ni = FALSE
           }
         }
-        
-        p
+        if(ni){
+          return(p)
+        }else{
+          return('')
+        }
       }, error = function(e){
         return('')
       }) ->
@@ -55,7 +61,9 @@ local({
       ips
     ips = ips[ips != '']
     if(length(ips)){
-      install.packages(ips)
+      assign('..instrave_packages', ips, envir = globalenv())
+      ..instrave_packages = ips
+      install.packages(..instrave_packages)
     }
   }
   
