@@ -37,7 +37,7 @@ local({
           if(p %in% bioc_p){
             biocLite(p, suppressUpdates = T, suppressAutoUpdate = T)
           }else{
-            install.packages(p, type = 'both')
+            install.packages(p, type = 'binary')
           }
         }
       })
