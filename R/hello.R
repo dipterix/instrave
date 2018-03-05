@@ -44,6 +44,10 @@ local({
     })
   }
   
+  bioc_p = bioc_p[! bioc_p %in% utils::installed.packages()[,1]]
+  if(length(bioc_p)){
+    biocLite(bioc_p, suppressUpdates = T, suppressAutoUpdate = T)
+  }
   
   if(!'rave' %in% pkgs){
     # install rave
