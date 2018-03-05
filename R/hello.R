@@ -2,17 +2,50 @@
 local({
   install.packages('devtools')
   pkgs = utils::installed.packages()[,1]
+  source("https://bioconductor.org/biocLite.R")
+  bioc_p = c("rhdf5", "HDF5Array")
+  
+  if(!'stringr' %in% pkgs){
+    install.packages('stringr')
+  }
+  
+  # check rave dependencies
+  
+  descr = readLines('https://raw.githubusercontent.com/beauchamplab/rave/rave-dipterix/DESCRIPTION')
+  start = which(stringr::str_detect(descr, '^Imports:')) + 1
+  end = which(stringr::str_detect(descr, '^Collate:')) - 1
+  tryCatch({
+    stringr::str_match(stringr::str_trim(descr[start:end]), "^([^\\(,\\ ]*)[^0-9]*([0-9\\.\\-]*)")
+  }, error = function(e){
+    NULL
+  }) ->
+    imports
+  
+  if(!is.null(imports)){
+    apply(imports, 1, function(x){
+      try({
+        pkgs = utils::installed.packages()[,1]
+        p = x[2]; v = x[3]
+        ni = TRUE
+        if(p %in% pkgs){
+          if(v == '' || utils::compareVersion(v, as.character(packageVersion(p))) <= 0){
+            ni = FALSE
+          }
+        }
+        
+        if(ni){
+          if(p %in% bioc_p){
+            biocLite(p, suppressUpdates = T, suppressAutoUpdate = T)
+          }else{
+            install.packages(p)
+          }
+        }
+      })
+    })
+  }
+  
+  
   if(!'rave' %in% pkgs){
-
-    # install rhdf5
-    source("https://bioconductor.org/biocLite.R")
-    bioc_p = c("rhdf5", "HDF5Array")
-    bioc_p = bioc_p[!bioc_p %in% pkgs]
-    if(length(bioc_p)){
-      message('Installing Bioconductor Dependencies...')
-      biocLite(bioc_p, suppressUpdates = T, suppressAutoUpdate = T)
-    }
-
     # install rave
     tryCatch({
       readLines('https://raw.githubusercontent.com/beauchamplab/rave/master/Recommend.md')[1]
