@@ -1,9 +1,20 @@
 # package to install RAVE
 local({
-  install.packages('devtools')
+  
   pkgs = utils::installed.packages()[,1]
-  source("https://bioconductor.org/biocLite.R")
+  if(! 'devtools' %in% pkgs){
+    install.packages('devtools')
+  }
+  
+  
+  
   bioc_p = c("rhdf5", "HDF5Array")
+  
+  bioc_p = bioc_p[! bioc_p %in% utils::installed.packages()[,1]]
+  if(length(bioc_p)){
+    source("https://bioconductor.org/biocLite.R")
+    biocLite(bioc_p, suppressUpdates = T, suppressAutoUpdate = T)
+  }
   
   if(!'stringr' %in% pkgs){
     install.packages('stringr')
@@ -34,20 +45,13 @@ local({
         }
         
         if(ni){
-          if(p %in% bioc_p){
-            biocLite(p, suppressUpdates = T, suppressAutoUpdate = T)
-          }else{
-            install.packages(p, type = 'binary')
-          }
+          install.packages(p)
         }
       })
     })
   }
   
-  bioc_p = bioc_p[! bioc_p %in% utils::installed.packages()[,1]]
-  if(length(bioc_p)){
-    biocLite(bioc_p, suppressUpdates = T, suppressAutoUpdate = T)
-  }
+  
   
   if(!'rave' %in% pkgs){
     # install rave
