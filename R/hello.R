@@ -32,10 +32,11 @@ local({
   }) ->
     imports
   
+  
+  
   if(!is.null(imports)){
     apply(imports, 1, function(x){
-      try({
-        pkgs = utils::installed.packages()[,1]
+      tryCatch({
         p = x[2]; v = x[3]
         ni = TRUE
         if(p %in% pkgs){
@@ -44,11 +45,18 @@ local({
           }
         }
         
-        if(ni){
-          install.packages(p)
-        }
-      })
-    })
+        p
+      }, error = function(e){
+        return('')
+      }) ->
+        p
+      p
+    }) ->
+      ips
+    ips = ips[ips != '']
+    if(length(ips)){
+      install.packages(ips)
+    }
   }
   
   
