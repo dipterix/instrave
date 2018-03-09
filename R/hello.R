@@ -68,24 +68,24 @@ local({
   }
   
   
+  # install rave
+  tryCatch({
+    readLines('https://raw.githubusercontent.com/beauchamplab/rave/master/Recommend.md')[1]
+  }, error = function(e){
+    return('master')
+  })->
+    ref
+
+
+  message('This is RAVE (', ref, ')')
+  message('Installing RAVE - this might take a while..... (10 Min?)')
+  devtools::install_github('beauchamplab/rave', ref = ref, quiet = F)
+  do.call('require', args = list(
+    package = 'rave',
+    character.only = TRUE
+  ))
   
-  if(!'rave' %in% pkgs){
-    # install rave
-    tryCatch({
-      readLines('https://raw.githubusercontent.com/beauchamplab/rave/master/Recommend.md')[1]
-    }, error = function(e){
-      return('master')
-    })->
-      ref
-
-
-    message('This is RAVE (', ref, ')')
-    message('Installing RAVE - this might take a while..... (10 Min?)')
-    devtools::install_github('beauchamplab/rave', ref = ref, quiet = F)
-    do.call('require', args = list(
-      package = 'rave',
-      character.only = TRUE
-    ))
-  }
+  # if(!'rave' %in% pkgs){
+  # }
 })
 
