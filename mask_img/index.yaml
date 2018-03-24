@@ -1,9 +1,12 @@
 - name: Zhengjia (Dipterix) Wang
   src: dipterix.jpeg
   text: I'm a tree, lovely.
+  index: 1
 - name: Karas Patrick
   src: patrick.jpg
   text: Winter is coming. Lannister send their regards.
+  index: 2
 - name: John Magnotti
   src: john_magnotti.jpeg
   text: A man who can run forever.
+  index: 3
