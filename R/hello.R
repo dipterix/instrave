@@ -17,6 +17,12 @@ local({
     biocLite(bioc_p, suppressUpdates = T, suppressAutoUpdate = T)
   }
 
+  # install rutabaga
+  if(!'rutabaga' %in% utils::installed.packages()[,1]){
+    devtools::install_github('dipterix/rutabaga')
+  }
+
+
   if(!'stringr' %in% pkgs){
     install.packages('stringr', type = 'source')
   }
