@@ -9,7 +9,7 @@ local({
 
 
 
-  bioc_p = c("rhdf5", "HDF5Array")
+  bioc_p = c("rhdf5")
 
   bioc_p = bioc_p[! bioc_p %in% utils::installed.packages()[,1]]
   if(length(bioc_p)){
