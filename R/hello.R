@@ -1,98 +1,240 @@
-# package to install RAVE
-local({
+# Code to check install RAVE
+rm(list = ls(), envir = globalenv())
 
-  message('Installing Dependencies - this might take a while.....?')
-  pkgs = utils::installed.packages()[,1]
-  if(! 'devtools' %in% pkgs){
-    install.packages('devtools', type = 'source')
+RVERSION = '3.6.0'
+CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
+RAVEREPO = 'beauchamplab/rave@dev-0.1.9'
+
+load_pkg <- function(pkg, type = 'binary'){
+  if( system.file('', package = pkg) == '' ){
+    cat('Installing package ', pkg, '\n')
+    cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
+    eval(parse(text = cmd))
   }
+}
 
-
-
-  bioc_p = c("rhdf5")
-
-  bioc_p = bioc_p[! bioc_p %in% utils::installed.packages()[,1]]
-  if(length(bioc_p)){
-    source("https://bioconductor.org/biocLite.R")
-    biocLite(bioc_p, suppressUpdates = T, suppressAutoUpdate = T)
+get_os <- function(){
+  os <- R.version$os
+  load_pkg('stringr')
+  if(stringr::str_detect(os, '^darwin')){
+    return('darwin')
   }
-
-  # install rutabaga
-  if(!'rutabaga' %in% utils::installed.packages()[,1]){
-    devtools::install_github('dipterix/rutabaga')
+  if(stringr::str_detect(os, '^linux')){
+    return('linux')
   }
-
-
-  if(!'stringr' %in% pkgs){
-    install.packages('stringr', type = 'source')
+  if(stringr::str_detect(os, '^solaris')){
+    return('solaris')
   }
+  if(stringr::str_detect(os, '^win')){
+    return('windows')
+  }
+  return('unknown')
+}
 
-  # check rave dependencies
+check_r_version <- function(req = RVERSION){
+  sess = sessionInfo()
+  ver = sprintf('%s.%s', sess$R.version$major, sess$R.version$minor)
+  if(utils::compareVersion(ver, req) < 0){
+    return(FALSE)
+  }
+  return(TRUE)
+}
 
-  descr = readLines('https://raw.githubusercontent.com/beauchamplab/rave/rave-dipterix/DESCRIPTION')
-  start = which(stringr::str_detect(descr, '^Imports:')) + 1
-  end = which(stringr::str_detect(descr, '^Collate:')) - 1
-  tryCatch({
-    stringr::str_match(stringr::str_trim(descr[start:end]), "^([^\\(,\\ ]*)[^0-9]*([0-9\\.\\-]*)")
-  }, error = function(e){
-    NULL
-  }) ->
-    imports
+has_rstudio <- function(){
+  load_pkg('rstudioapi')
+  isTRUE(try({rstudioapi::isAvailable()}, silent = TRUE))
+}
+
+restart <- function(cmd = CMD){
+  rstudioapi::restartSession(cmd)
+}
+
+id = NULL
+if(has_rstudio()){
+  try({
+    id = rstudioapi::terminalList()[[1]]
+  }, silent = TRUE)
+}
+# system <- function(cmd, ..., show = FALSE){
+#   if(has_rstudio()){
+#     # run command
+#     if(is.null(id) || !rstudioapi::terminalRunning(id)){
+#       id <<- rstudioapi::terminalCreate(show = FALSE)
+#     }
+#     if(!stringr::str_ends(cmd, '\n')){
+#       cmd = paste0(cmd, '\n')
+#     }
+#     rstudioapi::terminalClear(id)
+#     rstudioapi::terminalActivate(id, show = show)
+#     rstudioapi::terminalSend(id, cmd)
+#     while (isTRUE(rstudioapi::terminalBusy(id))) {
+#       Sys.sleep(1);
+#     }
+#     rstudioapi::sendToConsole('', execute = FALSE, echo = FALSE, focus = TRUE)
+#     exitcode = rstudioapi::terminalExitCode(id)
+#     res = rstudioapi::terminalBuffer(id)
+#     attr(res, 'status') = exitcode
+#
+#     res
+#   }else{
+#     base::system(cmd, ...)
+#   }
+# }
+
+
+os_name = get_os()
 
 
 
-  if(!is.null(imports)){
-    apply(imports, 1, function(x){
-      tryCatch({
-        p = x[2]; v = x[3]
-        if(p == 'stringr'){
-          return('')
-        }
-        ni = TRUE
-        if(p %in% pkgs){
-          if(v == '' || utils::compareVersion(v, as.character(packageVersion(p))) <= 0){
-            ni = FALSE
-          }
-        }
-        if(ni){
-          return(p)
-        }else{
-          return('')
-        }
-      }, error = function(e){
-        return('')
-      }) ->
-        p
-      p
-    }) ->
-      ips
-    ips = ips[ips != '']
-    if(length(ips)){
-      assign('..instrave_packages', ips, envir = globalenv())
-      ..instrave_packages = ips
-      install.packages(..instrave_packages, type = 'source')
+install_brew_macos <- function(){
+  # install brew
+  brew_path = system('which brew', intern = TRUE, ignore.stderr = FALSE)
+  if(!length(brew_path) || isTRUE(attr(brew_path,"status") == 1) || isTRUE(brew_path == '')){
+    
+    cat('Homebrew not installed. In the newly opened terminal, paste the following command line\n')
+    message('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+    cat('and hit Enter. Follow the instructions to install brew')
+    system('open -a "Terminal" --new', wait = FALSE, intern = FALSE)
+    readline('Please press Enter once "homebrew" is installed:')
+  }
+}
+
+install_fftw_macos <- function(){
+  path = system('which fftw', intern = TRUE)
+  if(!length(path) || isTRUE(attr(path,"status") == 1) || isTRUE(path == '')){
+    # install brew
+    install_brew_macos()
+    cat("system('brew install pkg-config')\n")
+    system('brew install pkg-config')
+    cat("system('brew install fftw')\n")
+    system('brew install fftw')
+  }
+}
+
+cat('=========== Welcome to RAVE installer ===========\n')
+
+message('STEP 1: check system requirement')
+
+test_r_ver = check_r_version()
+
+if(!test_r_ver){
+  message('R version is too low. Recommended verson: ', RVERSION)
+  
+  switch (
+    os_name,
+    'darwin' = {
+      # download R
+      readline('Press any key to proceed to download page...')
+      utils::browseURL('https://cran.r-project.org/bin/macosx/')
+    },
+    'windows' = {
+      readline('Please download *R* and *Rtools*. Press any key to proceed to download page...')
+      browseURL('https://cran.r-project.org/bin/windows/Rtools/')
+      browseURL('https://cran.r-project.org/bin/windows/')
+    },
+    {
+      readline('Press any key to proceed to download page...')
+      browseURL('https://cran.r-project.org/')
     }
+  )
+  
+  if(has_rstudio()){
+    readline('Please press any key when R is installed and updated:')
+    restart()
+  }else{
+    stop('R version too low. Please download newest R and restart the session')
   }
+  
+}
+
+if(os_name == 'windows'){
+  # TODO check if Rtools is installed
+}else if(os_name == 'darwin'){
+  # Check if commandline tool is installed
+  cat('system("xcode-select --install")   # install MacOS system commandline tools\n')
+  suppressWarnings({
+    res = system('xcode-select --install', wait = TRUE, intern = TRUE,
+                 ignore.stderr = TRUE, ignore.stdout = FALSE)
+  })
+  
+  if(!isTRUE(attr(res,"status") == 1)){
+    readline('Please press Enter once Commandline Tool is installed:')
+  }
+  
+  # install fftw
+  try({
+    load_pkg('fftw')
+    load_pkg('fftwtools')
+  })
+  if(system.file('', package = 'fftw') == ''){
+    suppressWarnings(install_fftw_macos())
+  }
+  
+}
+
+message('STEP 2: check install devtools')
+
+cat('install.packages("devtools")\n')
+load_pkg('devtools')
+update.packages('devtools', ask = 'graphics', type = 'binary')
+
+message('STEP 3: install RAVE and its dependencies')
+load_pkg('remotes')
+load_pkg('dipsaus')
+
+cat(sprintf('devtools::install_github("%s")\n', RAVEREPO))
+remotes::install_github(RAVEREPO, force = FALSE, upgrade = FALSE)
 
 
-  # install rave
-  tryCatch({
-    readLines('https://raw.githubusercontent.com/beauchamplab/rave/master/Recommend.md')[1]
-  }, error = function(e){
-    return('master')
-  })->
-    ref
+message('STEP 4: check updates')
+cat("rave::check_dependencies()\n")
+rave::check_dependencies()
 
+message('STEP 5: download N27 brain')
+cat("threeBrain::brain_setup()\n")
+n27 = threeBrain::merge_brain()
 
-  message('This is RAVE (', ref, ')')
-  message('Installing RAVE')
-  devtools::install_github('beauchamplab/rave', ref = ref, quiet = F)
-  do.call('require', args = list(
-    package = 'rave',
-    character.only = TRUE
-  ))
-
-  # if(!'rave' %in% pkgs){
-  # }
+message('STEP 6: RAVE setting')
+cat('Check RAVE repositories')
+capture.output({
+  rave::arrange_modules(refresh = TRUE, reset = FALSE)
+  rave::arrange_data_dir(FALSE, FALSE)
 })
+
+# check if subject exists
+has_YAB = FALSE
+projects = rave::get_projects()
+if('demo' %in% projects){
+  subjects = rave::get_subjects('demo')
+  if('YAB' %in% subjects){
+    has_YAB = TRUE
+  }
+}
+if(!has_YAB){
+  message('STEP 7: download demo subject YAB')
+  ans = dipsaus::ask_yesno('Do you want to download sample data? ~ 1.5GB')
+  
+  if(isTRUE(ans)){
+    rave::download_sample_data('YAB')
+    
+    # install group data
+    dirs = rave::get_dir('_project_data', 'demo')
+    if(!dir.exists(dirs$subject_dir)){
+      rave::download_sample_data('_group_data')
+    }
+    
+    rm(list = ls(), envir = globalenv())
+    # Start rave!
+    app = rave::start_rave()
+  }
+}else{
+  rm(list = ls(), envir = globalenv())
+  app = rave::start_rave()
+}
+print(app)
+
+
+
+
+
 
