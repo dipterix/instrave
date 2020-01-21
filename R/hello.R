@@ -268,7 +268,11 @@ if(!has_YAB){
   rm(list = ls(), envir = globalenv())
   app = rave::start_rave()
 }
-print(app)
+
+ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
+if(isTRUE(ans)){
+  print(app)
+}
 
 
 
