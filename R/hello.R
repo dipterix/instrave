@@ -95,7 +95,7 @@ install_brew_macos <- function(){
     message('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
     cat('and hit Enter. Follow the instructions to install brew')
     system('open -a "Terminal" --new', wait = FALSE, intern = FALSE)
-    readline('Please press Enter once "homebrew" is installed:')
+    readline('Please press Enter/Return once "homebrew" is installed:')
   }
 }
 
@@ -124,22 +124,22 @@ if(!test_r_ver){
     os_name,
     'darwin' = {
       # download R
-      readline('Press any key to proceed to download page...')
+      readline('Press Enter/Return to proceed to download page...')
       utils::browseURL('https://cran.r-project.org/bin/macosx/')
     },
     'windows' = {
-      readline('Please download *R* and *Rtools*. Press any key to proceed to download page...')
+      readline('Please download *R* and *Rtools*. Press Enter/Return to proceed to download page...')
       browseURL('https://cran.r-project.org/bin/windows/Rtools/')
       browseURL('https://cran.r-project.org/bin/windows/')
     },
     {
-      readline('Press any key to proceed to download page...')
+      readline('Press Enter/Return to proceed to download page...')
       browseURL('https://cran.r-project.org/')
     }
   )
   
   if(has_rstudio()){
-    readline('Please press any key when R is installed and updated:')
+    readline('Please press Enter/Return when R is installed and updated:')
     restart()
   }else{
     stop('R version too low. Please download newest R and restart the session')
@@ -158,7 +158,7 @@ if(os_name == 'windows'){
   })
   
   if(!isTRUE(attr(res,"status") == 1)){
-    readline('Please press Enter once Commandline Tool is installed:')
+    readline('Please press Enter/Return once Commandline Tool is installed:')
   }
   
   # install fftw
@@ -209,7 +209,7 @@ if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
   if(has_rstudio()){
     if(!dir.exists(raw_data_dir)){
       readline(paste0('Please select ', sQuote('RAW'), 
-                      ' data directory. Press Enter key to continue:'))
+                      ' data directory. Press Enter/Return key to continue:'))
       raw_data_dir = rstudioapi::selectDirectory(caption = 'Select RAW data directory', 
                                                  path = '~/rave_data/raw_dir')
       if(length(raw_data_dir) && dir.exists(raw_data_dir)){
@@ -218,7 +218,7 @@ if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
     }
     if(!dir.exists(data_dir)){
       readline(paste0('Please select ', sQuote('RAVE Repo'),
-                      ' directory. Press Enter key to continue:'))
+                      ' directory. Press Enter/Return key to continue:'))
       data_dir = rstudioapi::selectDirectory(caption = 'Select RAVE data directory',
                                              path = '~/rave_data/data_dir/')
       if(length(data_dir) && dir.exists(data_dir)){
