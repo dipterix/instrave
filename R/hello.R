@@ -5,11 +5,16 @@ RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
 RAVEREPO = 'beauchamplab/rave'
 
-load_pkg <- function(pkg, type = 'binary'){
+load_pkg <- function(pkg, type = 'binary', min_ver = NA){
+  cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
   if( system.file('', package = pkg) == '' ){
     cat('Installing package ', pkg, '\n')
-    cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
     eval(parse(text = cmd))
+  }else if(!is.na(min_ver)){
+    if(compareVersion(as.character(packageVersion(pkg)), min_ver) < 0){
+      # update
+      eval(parse(text = cmd))
+    }
   }
 }
 
@@ -112,7 +117,7 @@ install_fftw_macos <- function(){
 }
 
 cat('=========== Welcome to RAVE installer ===========\n')
-
+#### STEP 1: check system requirement ####
 message('STEP 1: check system requirement')
 
 test_r_ver = check_r_version()
@@ -172,28 +177,33 @@ if(os_name == 'windows'){
   
 }
 
+#### STEP 2: check install devtools ####
 message('STEP 2: check install devtools')
 
 cat('install.packages("devtools")\n')
-load_pkg('devtools')
-update.packages('devtools', ask = 'graphics', type = 'binary')
+load_pkg('devtools', min_ver = '2.2.0')
 
+#### STEP 3: install RAVE and its dependencies ####
 message('STEP 3: install RAVE and its dependencies')
 load_pkg('remotes')
-load_pkg('dipsaus')
+load_pkg('dipsaus', min_ver = '0.0.4')
+load_pkg('dipsaus', min_ver = '0.0.4', type = 'source')
+load_pkg('threeBrain', min_ver = '0.1.5', type = 'source')
 
 cat(sprintf('devtools::install_github("%s")\n', RAVEREPO))
-remotes::install_github(RAVEREPO, force = FALSE, upgrade = FALSE)
+remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = 'binary')
 
-
+#### STEP 4: check updates ####
 message('STEP 4: check updates')
 cat("rave::check_dependencies()\n")
 rave::check_dependencies()
 
+#### STEP 5: download N27 brain ####
 message('STEP 5: download N27 brain')
 cat("threeBrain::brain_setup()\n")
 n27 = threeBrain::merge_brain()
 
+#### STEP 6: RAVE setting ####
 message('STEP 6: RAVE setting')
 cat('Check RAVE repositories\n')
 capture.output({
@@ -238,6 +248,7 @@ if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
   
 }
 
+#### STEP 7: download demo subject YAB ####
 # check if subject exists
 has_YAB = FALSE
 projects = rave::get_projects()
