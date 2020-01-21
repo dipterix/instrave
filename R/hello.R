@@ -233,16 +233,9 @@ if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
             sQuote('Raw subject data path'), ' - where raw iEEG data are stored\n\t',
             sQuote('RAVE subject data path'),' - where RAVE root directory locates\n',
             'in the browser.')
-    rave::rave_options()
+    print(rave::rave_options())
   }
   
-  
-  
-  if(has_rstudio()){
-    readline(paste0('Please select ', sQuote('RAW data directory'), '. Press Enter key to continue:'))
-    rstudioapi::selectDirectory(caption = 'Select RAW data directory')
-    readline(paste0('Next, select ', sQuote('RAVE data directory'), '. Press Enter key to continue:'))
-  }
 }
 
 # check if subject exists
