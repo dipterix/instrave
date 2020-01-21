@@ -3,7 +3,7 @@ rm(list = ls(), envir = globalenv())
 
 RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
-RAVEREPO = 'beauchamplab/rave@dev-0.1.9'
+RAVEREPO = 'beauchamplab/rave'
 
 load_pkg <- function(pkg, type = 'binary'){
   if( system.file('', package = pkg) == '' ){
