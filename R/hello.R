@@ -200,6 +200,50 @@ capture.output({
   rave::arrange_modules(refresh = TRUE, reset = FALSE)
   rave::arrange_data_dir(FALSE, FALSE)
 })
+data_dir = rave::rave_options('data_dir')
+raw_data_dir = rave::rave_options('raw_data_dir')
+
+if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
+  message('Cannot find valid RAVE data repository paths. Please locate them!')
+  
+  if(has_rstudio()){
+    if(!dir.exists(raw_data_dir)){
+      readline(paste0('Please select ', sQuote('RAW'), 
+                      ' data directory. Press Enter key to continue:'))
+      raw_data_dir = rstudioapi::selectDirectory(caption = 'Select RAW data directory', 
+                                                 path = '~/rave_data/raw_dir')
+      if(length(raw_data_dir) && dir.exists(raw_data_dir)){
+        rave::rave_options('raw_data_dir' = raw_data_dir)
+      }
+    }
+    if(!dir.exists(data_dir)){
+      readline(paste0('Please select ', sQuote('RAVE Repo'),
+                      ' directory. Press Enter key to continue:'))
+      data_dir = rstudioapi::selectDirectory(caption = 'Select RAVE data directory',
+                                             path = '~/rave_data/data_dir/')
+      if(length(data_dir) && dir.exists(data_dir)){
+        rave::rave_options('data_dir' = data_dir)
+      }
+    }
+  }
+  
+  if(!length(raw_data_dir) || !dir.exists(raw_data_dir) || 
+     !length(data_dir) || !dir.exists(data_dir)){
+    message('Please enter correct \n\t', 
+            sQuote('Raw subject data path'), ' - where raw iEEG data are stored\n\t',
+            sQuote('RAVE subject data path'),' - where RAVE root directory locates\n',
+            'in the browser.')
+    rave::rave_options()
+  }
+  
+  
+  
+  if(has_rstudio()){
+    readline(paste0('Please select ', sQuote('RAW data directory'), '. Press Enter key to continue:'))
+    rstudioapi::selectDirectory(caption = 'Select RAW data directory')
+    readline(paste0('Next, select ', sQuote('RAVE data directory'), '. Press Enter key to continue:'))
+  }
+}
 
 # check if subject exists
 has_YAB = FALSE
