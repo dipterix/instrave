@@ -195,7 +195,7 @@ cat("threeBrain::brain_setup()\n")
 n27 = threeBrain::merge_brain()
 
 message('STEP 6: RAVE setting')
-cat('Check RAVE repositories')
+cat('Check RAVE repositories\n')
 capture.output({
   rave::arrange_modules(refresh = TRUE, reset = FALSE)
   rave::arrange_data_dir(FALSE, FALSE)
