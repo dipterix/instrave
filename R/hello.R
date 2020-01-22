@@ -251,9 +251,9 @@ if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
 #### STEP 7: download demo subject  ####
 message('STEP 7: download demo subject')
 # check demo subject
-installed_subjects = rave::get_subjects('demo')
+demo_subjects = rave::get_subjects('demo')
 sample_subs = c('KC', 'YAB', 'YAD', 'YAF', 'YAH', 'YAI', 'YAJ', 'YAK')
-installed_subjects = sample_subs %in% installed_subjects
+installed_subjects = sample_subs %in% demo_subjects
 if(!all(installed_subjects)){
   d = which(!installed_subjects)[[1]]
 }else{
@@ -292,6 +292,12 @@ if(length(subs)){
       try({
         brain = rave::rave_brain2(sprintf('demo/%s', sub))
       })
+    }
+    
+    # install group data
+    dirs = rave::get_dir('_project_data', 'demo')
+    if(!dir.exists(dirs$subject_dir)){
+      rave::download_sample_data('_group_data')
     }
   }
 }
