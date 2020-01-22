@@ -248,37 +248,54 @@ if(!dir.exists(data_dir) || !dir.exists(raw_data_dir)){
   
 }
 
-#### STEP 7: download demo subject YAB ####
-# check if subject exists
-has_YAB = FALSE
-projects = rave::get_projects()
-if('demo' %in% projects){
-  subjects = rave::get_subjects('demo')
-  if('YAB' %in% subjects){
-    has_YAB = TRUE
-  }
+#### STEP 7: download demo subject  ####
+message('STEP 7: download demo subject')
+# check demo subject
+installed_subjects = rave::get_subjects('demo')
+sample_subs = c('KC', 'YAB', 'YAD', 'YAF', 'YAH', 'YAI', 'YAJ', 'YAK')
+installed_subjects = sample_subs %in% installed_subjects
+if(!all(installed_subjects)){
+  d = which(!installed_subjects)[[1]]
+}else{
+  d = 11
 }
-if(!has_YAB){
-  message('STEP 7: download demo subject YAB')
-  ans = dipsaus::ask_yesno('Do you want to download sample data? ~ 1.5GB')
-  
-  if(isTRUE(ans)){
-    rave::download_sample_data('YAB')
-    
-    # install group data
-    dirs = rave::get_dir('_project_data', 'demo')
-    if(!dir.exists(dirs$subject_dir)){
-      rave::download_sample_data('_group_data')
-    }
-    
-    rm(list = ls(), envir = globalenv())
-    # Start rave!
-    app = rave::start_rave()
+s = c(
+  'Install demo subject(s)? Enter the number to proceed\n',
+  paste(' ', seq_along(sample_subs), ':', sample_subs, c('', '(installed)')[installed_subjects + 1], '\n'),
+  sprintf('  %d : All above\n', length(sample_subs) + 1),
+  sprintf('  %d : Uninstalled above\n', length(sample_subs) + 2),
+  sprintf('  11 or any other input: None\n')
+)
+ans = do.call(dipsaus::ask_or_default, c(as.list(s), list(default = d)))
+
+ans = as.integer(ans)
+if(!is.na(ans) && ans %in% 1:10){
+  if( ans == 9 ){
+    ans = 1:8
+  }else if(ans == 10){
+    ans = !installed_subjects
   }
 }else{
-  rm(list = ls(), envir = globalenv())
-  app = rave::start_rave()
+  ans = NA
 }
+subs = sample_subs[ans]
+subs = subs[!is.na(subs)]
+if(length(subs)){
+  ans = dipsaus::ask_yesno('The following subject(s) are to be downloaded. \n\t',
+                     paste(subs, collapse = ', '), '\n',
+                     'WARNING: Any subject in ', sQuote('demo'),
+                     ' project will be overridden if they exist.\n',
+                     'Enter yes/y to proceed, or no/n to cancel.')
+  if(isTRUE(ans)){
+    for(sub in subs){
+      rave::download_sample_data(sub, replace_if_exists = TRUE, )
+      try({
+        brain = rave::rave_brain2(sprintf('demo/%s', sub))
+      })
+    }
+  }
+}
+
 
 ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
 if(isTRUE(ans)){
