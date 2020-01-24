@@ -18,7 +18,7 @@ load_pkg <- function(pkg, type = 'binary', min_ver = NA, tried = 1){
       eval(parse(text = cmd))
     }
   }
-  if(tried > 0 && system.file('', package = pkg) == ''){
+  if(tried > 0){
     load_pkg(pkg, 'source', min_ver = min_ver, tried = 0)
   }
 }
@@ -192,6 +192,7 @@ if(os_name == 'windows'){
   cat('Your system might need the following tools to compile if using Ubuntu 16:\n',
       'libssl-dev libcurl4-openssl-dev libssh2-1-dev libv8-3.14-dev libxml2-dev libfftw3-dev libtiff5-dev libhdf5-dev\n',
       '\n If you are using other systems. Please search for the corrresponding system packages')
+  readline('Please press Enter/Return if you have them installed:')
 }
 
 #### STEP 2: check install devtools ####
