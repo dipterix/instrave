@@ -41,7 +41,7 @@ get_os <- function(){
     PKG_TYPE <<- 'source'
     return('solaris')
   }
-  if(stringr::str_detect(os, '^win')){
+  if(stringr::str_detect(os, '^win') || os == 'mingw32'){
     return('windows')
   }
   PKG_TYPE <<- 'source'
@@ -135,7 +135,7 @@ message('STEP 1: check system requirement')
 test_r_ver = check_r_version()
 
 if(!test_r_ver){
-  message('R version is too low. Please download R with versions greater or equal to', RVERSION)
+  message('R version is too low. Please download R with versions greater or equal to ', RVERSION)
   
   switch (
     os_name,
