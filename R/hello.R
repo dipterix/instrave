@@ -319,12 +319,7 @@ rm(list = ls(envir = globalenv()), envir = globalenv())
 
 ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
 if(isTRUE(ans)){
-  tryCatch({
-    restart('rave::start_rave()')
-  }, error = function(e){
-    app = rave::start_rave();
-    print(app)
-  })
+  restart('rave::start_rave()')
 }
 
 
