@@ -8,10 +8,17 @@ RAVEREPO = 'beauchamplab/rave'
 
 load_pkg <- function(pkg, type = 'binary', min_ver = NA){
   if(!pkg %in% c('stringr', 'rstudioapi')){
-    os = get_os()
-    if(!os %in% c('darwin', 'windows')){
-      type = 'source'
-    }
+    type = tryCatch({
+      os = get_os()
+      if(!os %in% c('darwin', 'windows')){
+        type = 'source'
+      }else{
+        type
+      }
+    }, error = function(e){
+      'source'
+    })
+    
   }
   
   cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
