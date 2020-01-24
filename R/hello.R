@@ -263,7 +263,7 @@ s = c(
   'Install demo subject(s)? Enter the number to proceed\n',
   paste(' ', seq_along(sample_subs), ':', sample_subs, c('', '(installed)')[installed_subjects + 1], '\n'),
   sprintf('  %d : All above\n', length(sample_subs) + 1),
-  sprintf('  %d : Uninstalled above\n', length(sample_subs) + 2),
+  sprintf('  %d : All of the above that are not already installed\n', length(sample_subs) + 2),
   sprintf('  11 or any other input: None\n')
 )
 ans = do.call(dipsaus::ask_or_default, c(as.list(s), list(default = d)))
@@ -305,6 +305,7 @@ if(length(subs)){
 
 ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
 if(isTRUE(ans)){
+  app = rave::start_rave()
   print(app)
 }
 
