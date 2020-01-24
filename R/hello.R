@@ -52,7 +52,7 @@ has_rstudio <- function(){
 }
 
 restart <- function(cmd = CMD){
-  rstudioapi::restartSession(cmd)
+  .rs.restartR(cmd)
 }
 
 id = NULL
@@ -124,7 +124,7 @@ message('STEP 1: check system requirement')
 test_r_ver = check_r_version()
 
 if(!test_r_ver){
-  message('R version is too low. Recommended verson: ', RVERSION)
+  message('R version is too low. Please download R with versions greater or equal to', RVERSION)
   
   switch (
     os_name,
@@ -145,7 +145,7 @@ if(!test_r_ver){
   )
   
   if(has_rstudio()){
-    readline('Please press Enter/Return when R is installed and updated:')
+    readline('Your web browser should be opened. Please press Enter/Return when R is installed and updated:')
     restart()
   }else{
     stop('R version too low. Please download newest R and restart the session')
