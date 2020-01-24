@@ -5,7 +5,7 @@ rm(list = ls(), envir = globalenv())
 RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
 RAVEREPO = 'beauchamplab/rave'
-
+PKG_TYPE = 'binary'
 load_pkg <- function(pkg, type = 'binary', min_ver = NA, tried = 1){
   
   cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
@@ -34,14 +34,17 @@ get_os <- function(){
     return('darwin')
   }
   if(stringr::str_detect(os, '^linux')){
+    PKG_TYPE <<- 'source'
     return('linux')
   }
   if(stringr::str_detect(os, '^solaris')){
+    PKG_TYPE <<- 'source'
     return('solaris')
   }
   if(stringr::str_detect(os, '^win')){
     return('windows')
   }
+  PKG_TYPE <<- 'source'
   return('unknown')
 }
 
@@ -184,6 +187,11 @@ if(os_name == 'windows'){
     suppressWarnings(install_fftw_macos())
   }
   
+}else{
+  # linux: install 
+  cat('Your system might need the following tools to compile if using Ubuntu 16:\n',
+      'libssl-dev libcurl4-openssl-dev libssh2-1-dev libv8-3.14-dev libxml2-dev libfftw3-dev libtiff5-dev libhdf5-dev\n',
+      '\n If you are using other systems. Please search for the corrresponding system packages')
 }
 
 #### STEP 2: check install devtools ####
@@ -200,7 +208,7 @@ load_pkg('dipsaus', min_ver = '0.0.4', type = 'source')
 load_pkg('threeBrain', min_ver = '0.1.5', type = 'source')
 
 cat(sprintf('devtools::install_github("%s")\n', RAVEREPO))
-remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = 'binary')
+remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = PKG_TYPE)
 # tryCatch({
 # }, error = function(e){
 #   # install from compiled version
