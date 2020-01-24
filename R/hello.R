@@ -195,8 +195,8 @@ remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = 'binary'
 
 #### STEP 4: check updates ####
 message('STEP 4: check updates')
-cat("rave::check_dependencies()\n")
-rave::check_dependencies()
+cat("rave::check_dependencies(restart = FALSE)\n")
+rave::check_dependencies(restart = FALSE)
 
 #### STEP 5: download N27 brain ####
 message('STEP 5: download N27 brain')
@@ -305,8 +305,7 @@ if(length(subs)){
 
 ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
 if(isTRUE(ans)){
-  app = rave::start_rave()
-  print(app)
+  .rs.restartR('rave::start_rave()')
 }
 
 
