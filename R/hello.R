@@ -7,6 +7,13 @@ CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hell
 RAVEREPO = 'beauchamplab/rave'
 
 load_pkg <- function(pkg, type = 'binary', min_ver = NA){
+  if(pkg != 'stringr'){
+    os = get_os()
+    if(!os %in% c('darwin', 'windows')){
+      type = 'source'
+    }
+  }
+  
   cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
   if( system.file('', package = pkg) == '' ){
     cat('Installing package ', pkg, '\n')
@@ -21,7 +28,11 @@ load_pkg <- function(pkg, type = 'binary', min_ver = NA){
 
 get_os <- function(){
   os <- R.version$os
-  load_pkg('stringr')
+  tryCatch({
+    load_pkg('stringr')
+  }, error = function(e){
+    load_pkg('stringr', type = 'source')
+  })
   if(stringr::str_detect(os, '^darwin')){
     return('darwin')
   }
