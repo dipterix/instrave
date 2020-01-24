@@ -219,10 +219,10 @@ remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = PKG_TYPE
 #### STEP 4: check updates ####
 message('STEP 4: check updates')
 cat("rave::check_dependencies(restart = FALSE)\n")
-remotes::install_github("dipterix/rutabaga@develop", upgrade = FALSE, force = FALSE, quiet = TRUE)
-remotes::install_github("dipterix/threeBrain", upgrade = FALSE, force = FALSE, quiet = TRUE)
-remotes::install_github("beauchamplab/ravebuiltins@migrate2", upgrade = FALSE, force = FALSE, quiet = TRUE)
-remotes::install_github("dipterix/dipsaus", upgrade = FALSE, force = FALSE, quiet = TRUE)
+remotes::install_github("dipterix/rutabaga@develop", upgrade = FALSE, force = FALSE)
+remotes::install_github("dipterix/threeBrain", upgrade = FALSE, force = FALSE)
+remotes::install_github("beauchamplab/ravebuiltins@migrate2", upgrade = FALSE, force = FALSE)
+remotes::install_github("dipterix/dipsaus", upgrade = FALSE, force = FALSE)
 
 
 
