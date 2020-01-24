@@ -7,7 +7,7 @@ CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hell
 RAVEREPO = 'beauchamplab/rave'
 
 load_pkg <- function(pkg, type = 'binary', min_ver = NA){
-  if(pkg != 'stringr'){
+  if(!pkg %in% c('stringr', 'rstudioapi')){
     os = get_os()
     if(!os %in% c('darwin', 'windows')){
       type = 'source'
