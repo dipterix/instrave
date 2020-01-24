@@ -196,7 +196,10 @@ remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = 'binary'
 #### STEP 4: check updates ####
 message('STEP 4: check updates')
 cat("rave::check_dependencies(restart = FALSE)\n")
-rave::check_dependencies(restart = FALSE)
+remotes::install_github("dipterix/rutabaga@develop", upgrade = FALSE, force = FALSE, quiet = TRUE)
+remotes::install_github("dipterix/threeBrain", upgrade = FALSE, force = FALSE, quiet = TRUE)
+remotes::install_github("beauchamplab/ravebuiltins@migrate2", upgrade = FALSE, force = FALSE, quiet = TRUE)
+remotes::install_github("dipterix/dipsaus", upgrade = FALSE, force = FALSE, quiet = TRUE)
 
 #### STEP 5: download N27 brain ####
 message('STEP 5: download N27 brain')
