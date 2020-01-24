@@ -1,7 +1,6 @@
 # Code to check install RAVE
 rm(list = ls(), envir = globalenv())
 
-Sys.setenv(GITHUB_PAT='c6155fbf60c26a16661e46d6d3d6fbda5da4fdd9')
 
 RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
@@ -194,6 +193,11 @@ load_pkg('threeBrain', min_ver = '0.1.5', type = 'source')
 
 cat(sprintf('devtools::install_github("%s")\n', RAVEREPO))
 remotes::install_github(RAVEREPO, force = FALSE, upgrade = TRUE, type = 'binary')
+# tryCatch({
+# }, error = function(e){
+#   # install from compiled version
+#   remotes::install_url('https://github.com/beauchamplab/rave/archive/v0.1.9-beta.tar.gz')
+# })
 
 #### STEP 4: check updates ####
 message('STEP 4: check updates')
@@ -202,6 +206,10 @@ remotes::install_github("dipterix/rutabaga@develop", upgrade = FALSE, force = FA
 remotes::install_github("dipterix/threeBrain", upgrade = FALSE, force = FALSE, quiet = TRUE)
 remotes::install_github("beauchamplab/ravebuiltins@migrate2", upgrade = FALSE, force = FALSE, quiet = TRUE)
 remotes::install_github("dipterix/dipsaus", upgrade = FALSE, force = FALSE, quiet = TRUE)
+
+
+
+
 
 #### STEP 5: download N27 brain ####
 message('STEP 5: download N27 brain')
