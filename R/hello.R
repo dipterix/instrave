@@ -1,7 +1,7 @@
 # Code to check install RAVE
 rm(list = ls(), envir = globalenv())
 
-Sys.setenv(GITHUB_PAT='8697de85520e2e6302261fef86d9f25d503a0482')
+Sys.setenv(GITHUB_PAT='c6155fbf60c26a16661e46d6d3d6fbda5da4fdd9')
 
 RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
