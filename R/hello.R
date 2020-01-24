@@ -305,7 +305,12 @@ if(length(subs)){
 
 ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
 if(isTRUE(ans)){
-  .rs.restartR('rave::start_rave()')
+  tryCatch({
+    restart('rave::start_rave()')
+  }, error = function(e){
+    app = rave::start_rave();
+    print(app)
+  })
 }
 
 
