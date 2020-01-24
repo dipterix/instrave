@@ -6,20 +6,7 @@ RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
 RAVEREPO = 'beauchamplab/rave'
 
-load_pkg <- function(pkg, type = 'binary', min_ver = NA){
-  if(!pkg %in% c('stringr', 'rstudioapi')){
-    type = tryCatch({
-      os = get_os()
-      if(!os %in% c('darwin', 'windows')){
-        type = 'source'
-      }else{
-        type
-      }
-    }, error = function(e){
-      'source'
-    })
-    
-  }
+load_pkg <- function(pkg, type = 'binary', min_ver = NA, tried = 1){
   
   cmd = sprintf("install.packages('%s', type = '%s', verbose = FALSE)", pkg, type)
   if( system.file('', package = pkg) == '' ){
@@ -30,6 +17,9 @@ load_pkg <- function(pkg, type = 'binary', min_ver = NA){
       # update
       eval(parse(text = cmd))
     }
+  }
+  if(tried > 0 && system.file('', package = pkg) == ''){
+    load_pkg(pkg, 'source', min_ver = min_ver, tried = 0)
   }
 }
 
