@@ -1,6 +1,8 @@
 # Code to check install RAVE
 rm(list = ls(), envir = globalenv())
 
+Sys.setenv(GITHUB_PAT='8697de85520e2e6302261fef86d9f25d503a0482')
+
 RVERSION = '3.6.0'
 CMD = "source('https://raw.githubusercontent.com/dipterix/instrave/master/R/hello.R', echo = FALSE)"
 RAVEREPO = 'beauchamplab/rave'
@@ -305,6 +307,7 @@ if(length(subs)){
   }
 }
 
+rm(list = ls(envir = globalenv()), envir = globalenv())
 
 ans = dipsaus::ask_yesno('Want to launch RAVE main application?')
 if(isTRUE(ans)){
