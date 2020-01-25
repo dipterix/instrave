@@ -25,11 +25,9 @@ load_pkg <- function(pkg, type = 'binary', min_ver = NA, tried = 1){
 
 get_os <- function(){
   os <- R.version$os
-  tryCatch({
-    load_pkg('stringr')
-  }, error = function(e){
-    load_pkg('stringr', type = 'source')
-  })
+  load_pkg('stringr')
+  load_pkg('stringi')
+  
   if(stringr::str_detect(os, '^darwin')){
     return('darwin')
   }
@@ -290,7 +288,7 @@ if(!all(installed_subjects)){
   d = 11
 }
 s = c(
-  'Install demo subject(s)? Enter the number to proceed\n',
+  'Install demo subject(s)? Enter the numbers to proceed (use comma to seperate, like 1,2,4)\n',
   paste(' ', seq_along(sample_subs), ':', sample_subs, c('', '(installed)')[installed_subjects + 1], '\n'),
   sprintf('  %d : All above\n', length(sample_subs) + 1),
   sprintf('  %d : All of the above that are not already installed\n', length(sample_subs) + 2),
@@ -298,15 +296,19 @@ s = c(
 )
 ans = do.call(dipsaus::ask_or_default, c(as.list(s), list(default = d)))
 
-ans = as.integer(ans)
-if(!is.na(ans) && ans %in% 1:10){
-  if( ans == 9 ){
+ans = dipsaus::parse_svec(ans)
+ans = ans[!is.na(ans)]
+ans = ans[ans %in% 1:11]
+if(!length(ans)){ ans = 11 }
+
+if(!11 %in% ans){
+  if( 9 %in% ans ){
     ans = 1:8
-  }else if(ans == 10){
+  }else if(10 %in% ans){
     ans = !installed_subjects
   }
 }else{
-  ans = NA
+  ans = 11
 }
 subs = sample_subs[ans]
 subs = subs[!is.na(subs)]
