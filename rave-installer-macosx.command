@@ -10,7 +10,7 @@ N27_PATH="$HOME/rave_data/others/three_brain/N27/"
 HOME_BSLASH=$(echo "$HOME" | sed "s/\//\\\\\\\\/g")
 DEMO_SUB_STR="All All_that_are_not_installed KC YAB YAD YAF YAH YAI YAJ YAK"
 DEMO_SUBS=( $DEMO_SUB_STR );
-
+RUN_R="Rscript --no-save --no-restore --no-site-file --no-init-file"
 
 if [ "$#" -ne 1 ]; then
   start_step=0
@@ -82,24 +82,39 @@ echo "[RAVE]: Step 2: Install RAVE and its dependencies"
 if [ $start_step -gt 0 ]; then
   echo "[RAVE]: skipped"
 else
+  # Rcpp
+  ($RUN_R -e "utils::install.packages('Rcpp',type='binary',repos='https://cloud.r-project.org')") || {
+    echo "[RAVE]: Failed to install R package 'Rcpp'"
+    exit 1
+  }
   # stringr
-  (Rscript -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'stringr'"
     exit 1
   }
   # devtools
-  (Rscript -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'devtools'"
     exit 1
   }
   # fftwtools
-  (Rscript -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
   # hdf5r
-  (Rscript -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
+    exit 1
+  }
+  # dipsaus
+  ($RUN_R -e "utils::install.packages('dipsaus',type='binary',repos='https://cloud.r-project.org')") || {
+    echo "[RAVE]: Failed to install R package 'dipsaus'"
+    exit 1
+  }
+  # threeBrain
+  ($RUN_R -e "utils::install.packages('threeBrain',type='binary',repos='https://cloud.r-project.org')") || {
+    echo "[RAVE]: Failed to install R package 'threeBrain'"
     exit 1
   }
   
@@ -109,8 +124,9 @@ else
   
   
   # install RAVE
-  Rscript -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
-  Rscript -e "rave::check_dependencies(update_rave = FALSE, restart = FALSE)"
+  $RUN_R -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
+  $RUN_R -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  $RUN_R -e "remotes::install_github('beauchamplab/ravebuiltins@migrate2', upgrade = FALSE, force = FALSE, quiet = TRUE)"
 
 fi
 
@@ -135,9 +151,9 @@ else
   }
   
   if [ $install_n27 -gt 0 ]; then
-    # Rscript -e "threeBrain::merge_brain()"
+    # $RUN_R -e "threeBrain::merge_brain()"
     rm -r "$N27_PATH" 2> /dev/null
-    Rscript -e "threeBrain::brain_setup(use_python = FALSE)"
+    $RUN_R -e "threeBrain::brain_setup(use_python = FALSE)"
     echo ""
   fi
 fi
@@ -147,12 +163,12 @@ echo "[RAVE]: Step 4: Check RAVE settings"
 if [ $start_step -gt 2 ]; then
   echo "[RAVE]: skipped"
 else
-  Rscript -e "require(rave); rave::arrange_modules(refresh = TRUE, reset = FALSE)" &> /dev/null
-  Rscript -e "rave::arrange_data_dir(TRUE, FALSE)" &> /dev/null
+  $RUN_R -e "require(rave); rave::arrange_modules(refresh = TRUE, reset = FALSE)" &> /dev/null
+  $RUN_R -e "rave::arrange_data_dir(TRUE, FALSE)" &> /dev/null
   
   # check data_dir
-  data_dir=$(Rscript -e "cat(as.character(rave::rave_options('data_dir')))")
-  raw_dir=$(Rscript -e "cat(as.character(rave::rave_options('raw_data_dir')))")
+  data_dir=$($RUN_R -e "cat(as.character(rave::rave_options('data_dir')))")
+  raw_dir=$($RUN_R -e "cat(as.character(rave::rave_options('raw_data_dir')))")
   
   if [ ! -d "$raw_dir" ]; then
     echo "[RAVE]: Cannot find folder to store **raw** data directory ($raw_dir NOT FOUND)"
@@ -160,7 +176,7 @@ else
         read -p "Please enter the path to raw data folder: " -e raw_dir
         raw_dir=$(echo "$raw_dir" | sed "s/~/$HOME_BSLASH/g" | sed "s/\\\\/\\//g")
         if [ -d "$raw_dir" ]; then
-          Rscript -e "cat(as.character(rave::rave_options('raw_data_dir'='$raw_dir')))" &> /dev/null
+          $RUN_R -e "cat(as.character(rave::rave_options('raw_data_dir'='$raw_dir')))" &> /dev/null
           break;
         else
           echo "RAW data path $raw_dir not exists! Please re-enter: "
@@ -174,7 +190,7 @@ else
         read -p "Please enter the path to main data folder: " -e data_dir
         data_dir=$(echo "$data_dir" | sed "s/~/$HOME_BSLASH/g" | sed "s/\\\\/\\//g")
         if [ -d "$data_dir" ]; then
-          Rscript -e "cat(as.character(rave::rave_options('data_dir'='$data_dir')))" &> /dev/null
+          $RUN_R -e "cat(as.character(rave::rave_options('data_dir'='$data_dir')))" &> /dev/null
           break;
         else
           echo "Main data path $data_dir not exists! Please re-enter: "
@@ -192,7 +208,7 @@ echo "[RAVE]: Step 5: Check demo subject(s)"
 if [ $start_step -gt 3 ]; then
   echo "[RAVE]: skipped"
 else
-  data_dir=$(Rscript -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
+  data_dir=$($RUN_R -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
   echo "[RAVE]: Please select demo subject(s) to download. "
   echo "  Enter the corresponding indices (like 1,2,3), use ',' to separate."
   # check demo subject
@@ -209,13 +225,13 @@ else
   read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
   
   # get user's input
-  Rscript -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
+  $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
 
 while true; do
     read -p "[RAVE]: RAVE installed. Want to start application? [Yes/No]: " yn
     case $yn in
-        [Yy]* ) Rscript -e "rave::start_rave()"; break;;
+        [Yy]* ) $RUN_R -e "rave::start_rave()"; break;;
         [Nn]* ) break;;
         * ) echo "Please answer Yes/y or No/n.";;
     esac

@@ -156,7 +156,7 @@ else
   # install RAVE
   $RUN_R -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
   $RUN_R -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
-  $RUN_R -e "remotes::install_github('beauchamplab/ravebuiltins@migrate', upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  $RUN_R -e "remotes::install_github('beauchamplab/ravebuiltins@migrate2', upgrade = FALSE, force = FALSE, quiet = TRUE)"
 
 fi
 
