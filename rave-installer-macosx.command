@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # register global variables
 
@@ -67,7 +67,7 @@ if [ $r_need_install -gt 0 ]; then
 fi
 
 # check install xcode command line
-( xcode-select --install 2>/dev/null ) || {
+( xcode-select --install 2>/dev/null; read -p "Press Enter/Return once command line tools are installed" ) || {
   echo "[RAVE]: Command line tools are already installed (skip)"
 }
 
@@ -184,7 +184,7 @@ else
 fi
 
 
-echo "[RAVE]: Step 4: Check demo subject(s)"
+echo "[RAVE]: Step 5: Check demo subject(s)"
 if [ $start_step -gt 3 ]; then
   echo "[RAVE]: skipped"
 else
@@ -197,9 +197,9 @@ else
     sub="${DEMO_SUBS[ $ii ]}"
     subdir="$data_dir/demo/$sub"
     if [ -d "$subdir" ]; then
-      echo "  $ii\t$sub (installed)"
+      echo "  $ii $sub (installed)"
     else
-      echo "  $ii\t$sub"
+      echo "  $ii $sub"
     fi
   done
   read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
@@ -207,7 +207,6 @@ else
   # get user's input
   Rscript -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
-#0 1,2, 3 -1 A 2b
 
 while true; do
     read -p "[RAVE]: RAVE installed. Want to start application? [Yes/No]: " yn
