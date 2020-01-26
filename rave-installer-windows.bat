@@ -13,9 +13,10 @@ if exist %GITPATH% (
 ) else (
   echo Cannot find Git Bash installed at "%GITPATH%"
   ECHO Downloading Git Bash from https://git-scm.com/download/win
+  ECHO Installing Git Bash to download RAVE from Github. 
+  ECHO Once Bash is installed, you might want to close this window and restart batch
   powershell -Command "Invoke-WebRequest %GITBASHUTL% -OutFile %TEMP%/git.exe"
   "%TEMP%\git.exe"
-  ECHO Installing Git Bash to download RAVE from Github. 
   SET /p=Press Enter/Return once installation is finished: 
 )
 

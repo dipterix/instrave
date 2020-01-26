@@ -109,6 +109,11 @@ echo "[RAVE]: Step 2: Install RAVE and its dependencies"
 if [ $start_step -gt 0 ]; then
   echo "[RAVE]: skipped"
 else
+  # Rcpp
+  (Rscript.exe -e "utils::install.packages('Rcpp',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
+    echo "[RAVE]: Failed to install R package 'Rcpp'"
+    exit 1
+  }
   # stringr
   (Rscript.exe -e "utils::install.packages('stringr',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'stringr'"
