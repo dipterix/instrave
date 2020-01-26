@@ -135,12 +135,24 @@ test_r_ver = check_r_version()
 if(!test_r_ver){
   message('R version is too low. Please download R with versions greater or equal to ', RVERSION)
   
+  inst_path = '~/Downloads/RAVE_installer'
+  
   switch (
     os_name,
     'darwin' = {
       # download R
-      readline('Press Enter/Return to proceed to download page...')
-      utils::browseURL('https://cran.r-project.org/bin/macosx/')
+      readline('Press Enter/Return to download and install latest R:')
+      # create a download folder in ~/Download
+      dir.create(inst_path, recursive = TRUE)
+      download.file(
+        'https://cran.r-project.org/bin/macosx/el-capitan/base/R-latest.pkg',
+        file.path(inst_path, 'R-latest.pkg'))
+      
+      instr_cmd = sprintf('open "%s"', 
+                          normalizePath(file.path(inst_path, 'R-latest.pkg')))
+      
+      system(instr_cmd)
+      
     },
     'windows' = {
       readline('Please download *R* and *Rtools*. Press Enter/Return to proceed to download page...')
@@ -154,7 +166,7 @@ if(!test_r_ver){
   )
   
   if(has_rstudio()){
-    readline('Your web browser should be opened. Please press Enter/Return when R is installed and updated:')
+    readline('Please press Enter/Return when R is installed and updated:')
     restart()
   }else{
     stop('R version too low. Please download newest R and restart the session')
