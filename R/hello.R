@@ -248,7 +248,7 @@ message('STEP 6: RAVE setting')
 cat('Check RAVE repositories\n')
 capture.output({
   rave::arrange_modules(refresh = TRUE, reset = FALSE)
-  rave::arrange_data_dir(FALSE, FALSE)
+  rave::arrange_data_dir(TRUE, FALSE)
 })
 data_dir = rave::rave_options('data_dir')
 raw_data_dir = rave::rave_options('raw_data_dir')
