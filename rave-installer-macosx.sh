@@ -200,11 +200,19 @@ else
       echo "  $ii\t$sub"
     fi
   done
-  read -p "Please select which subjects to download: " -e subidx
+  read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
   
   # get user's input
   Rscript -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
 #0 1,2, 3 -1 A 2b
 
+while true; do
+    read -p "[RAVE]: RAVE installed. Want to start application? [Yes/No]: " yn
+    case $yn in
+        [Yy]* ) Rscript -e "rave::start_rave()"; break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer Yes/y or No/n.";;
+    esac
+done
 
