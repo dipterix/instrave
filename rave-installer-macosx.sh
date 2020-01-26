@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # register global variables
 
 R_VER_MAJOR=3
