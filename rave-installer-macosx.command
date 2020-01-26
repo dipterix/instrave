@@ -67,7 +67,11 @@ if [ $r_need_install -gt 0 ]; then
 fi
 
 # check install xcode command line
-( xcode-select --install 2>/dev/null; read -p "Press Enter/Return once command line tools are installed" ) || {
+( (
+  xcode-select --install 2>/dev/null
+) && {
+  read -p "Press Enter/Return once command line tools are installed: "
+} ) || {
   echo "[RAVE]: Command line tools are already installed (skip)"
 }
 
@@ -144,7 +148,7 @@ if [ $start_step -gt 2 ]; then
   echo "[RAVE]: skipped"
 else
   Rscript -e "require(rave); rave::arrange_modules(refresh = TRUE, reset = FALSE)" &> /dev/null
-  Rscript -e "rave::arrange_data_dir(FALSE, FALSE)" &> /dev/null
+  Rscript -e "rave::arrange_data_dir(TRUE, FALSE)" &> /dev/null
   
   # check data_dir
   data_dir=$(Rscript -e "cat(as.character(rave::rave_options('data_dir')))")
