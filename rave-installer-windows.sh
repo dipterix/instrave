@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # Check HOME variable, be windows compatible
-HOMESTR=$HOME
-HOME="${HOMESTR/\%USERPROFILE\%/$USERPROFILE\\}"
+if [ $RAVE_RUNNING_OS == "windows" ]; then
+  HOMESTR=$HOME
+  HOMESTR="${HOMESTR/\%USERPROFILE\%/$USERPROFILE\\}"
+  HOME="/${HOMESTR//:\\//}"
+fi
+
 
 
 # register global variables
