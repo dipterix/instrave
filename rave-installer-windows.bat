@@ -59,9 +59,7 @@ FOR /F "tokens=3* delims= " %%L IN ('reg.exe QUERY "HKEY_CURRENT_USER\Software\M
 
 echo %HOMESTR%
 
-%GITPATH% --login rave-installer-windows.sh
-
-pause
+REM %GITPATH% --login rave-installer-windows.sh
 
 powershell -Command "Invoke-WebRequest %RAVEINSTSCRIPT% -OutFile %TEMP%\RAVE.sh"
 
