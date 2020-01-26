@@ -22,7 +22,7 @@ fi
 
 
 echo $start_step
-#exit 0
+# exit 0
 
 echo "============ Welcome to RAVE installer (Windows) ============";
 echo "[RAVE]: Step 1: check system requirement..."
@@ -99,22 +99,32 @@ if [ $start_step -gt 0 ]; then
   echo "[RAVE]: skipped"
 else
   # stringr
-  (Rscript.exe -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('stringr',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'stringr'"
     exit 1
   }
   # devtools
-  (Rscript.exe -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('devtools',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'devtools'"
     exit 1
   }
   # fftwtools
-  (Rscript.exe -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('fftwtools',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
   # hdf5r
-  (Rscript.exe -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('hdf5r',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
+    echo "[RAVE]: Failed to install R package 'fftwtools'"
+    exit 1
+  }
+  # dipsaus
+  (Rscript.exe -e "utils::install.packages('dipsaus',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
+    echo "[RAVE]: Failed to install R package 'fftwtools'"
+    exit 1
+  }
+  # threeBrain
+  (Rscript.exe -e "utils::install.packages('threeBrain',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
@@ -126,11 +136,10 @@ else
   
   # install RAVE
   Rscript.exe -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
-  Rscript.exe -e "rave::check_dependencies(update_rave = FALSE, restart = FALSE)"
+  Rscript.exe -e "remotes::install_github('dipterix/rutabaga@develop' upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  Rscript.exe -e "remotes::install_github('beauchamplab/ravebuiltins@migrate' upgrade = FALSE, force = FALSE, quiet = TRUE)"
 
 fi
-
-
 
 echo "[RAVE]: Step 3: Download N27 Brain"
 if [ $start_step -gt 1 ]; then
