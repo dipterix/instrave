@@ -50,14 +50,16 @@ SET RAVE_RUNNING_OS=windows
 
 
 SETLOCAL ENABLEEXTENSIONS
-SET HOME=%HOMEPATH%\Documents
+SET HOMESTR=%HOMEPATH%\Documents
 
 
 FOR /F "tokens=3* delims= " %%L IN ('reg.exe QUERY "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Personal') DO (
-    IF NOT "%%~L"=="" SET "HOME=%%~L"
+    IF NOT "%%~L"=="" SET "HOMESTR=%%~L"
 )
 
-echo %HOME%
+echo %HOMESTR%
+
+%GITPATH% --login rave-installer-windows.sh
 
 pause
 
@@ -65,7 +67,6 @@ powershell -Command "Invoke-WebRequest %RAVEINSTSCRIPT% -OutFile %TEMP%\RAVE.sh"
 
 @echo on
 
-REM %GITPATH% --login rave-installer-windows.sh
 %GITPATH% --login %TEMP%\RAVE.sh
 
 

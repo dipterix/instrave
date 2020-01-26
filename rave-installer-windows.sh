@@ -2,11 +2,13 @@
 
 # Check HOME variable, be windows compatible
 if [ $RAVE_RUNNING_OS == "windows" ]; then
-  HOMESTR=$HOME
-  HOMESTR="${HOMESTR/\%USERPROFILE\%/$USERPROFILE\\}"
+  # HOMESTR=$HOME
+  HOMESTR="${HOMESTR/\%USERPROFILE\%/$USERPROFILE}"
+  echo $HOMESTR
   HOME="/${HOMESTR//:\\//}"
+  HOME="${HOME//\\//}"
+  echo $HOME
 fi
-
 
 
 # register global variables
