@@ -68,6 +68,7 @@ if [ $r_need_install -gt 0 ]; then
   
   RFNAME=$( cat "$INST_PATH/R-version.txt" | egrep -o "R-[0-9.]+-win\.exe" )
   
+  echo "Downloading to $INST_PATH/R-latest.exe"
   curl "https://cran.r-project.org/bin/windows/base/$RFNAME" > "$INST_PATH/R-latest.exe"
   
   echo "[RAVE]: Waiting for the installer. Please follow the instructions from the R installer"
