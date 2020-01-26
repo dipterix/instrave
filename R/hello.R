@@ -332,7 +332,7 @@ if(length(subs)){
                      'Enter yes/y to proceed, or no/n to cancel.')
   if(isTRUE(ans)){
     for(sub in subs){
-      rave::download_sample_data(sub, replace_if_exists = TRUE, )
+      rave::download_sample_data(sub, replace_if_exists = TRUE)
       try({
         brain = rave::rave_brain2(sprintf('demo/%s', sub))
       })

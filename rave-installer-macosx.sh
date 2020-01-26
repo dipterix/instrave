@@ -203,7 +203,7 @@ else
   read -p "Please select which subjects to download: " -e subidx
   
   # get user's input
-  #Rscript -e "a=dipsaus::parse_svec('$subidx');a=a[!is.na(a)];"
+  Rscript -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
 #0 1,2, 3 -1 A 2b
 

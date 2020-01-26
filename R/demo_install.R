@@ -24,7 +24,19 @@ if( skip_installed ){
   demo_subs = demo_subs[ !demo_subs %in% subs ]
 }
 
-print(demo_subs)
+cat("Installing demo subject(s): ", paste(demo_subs, sep = ', '))
+
+for( sub in demo_subs ){
+  rave::download_sample_data(sub, replace_if_exists = TRUE)
+  try({
+    brain = rave::rave_brain2(sprintf('demo/%s', sub))
+  })
+}
+# install group data
+dirs = rave::get_dir(subject_code = '_project_data', project_name = 'demo')
+if(!dir.exists(dirs$subject_dir)){
+  rave::download_sample_data('_group_data')
+}
 
 
 
