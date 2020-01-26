@@ -30,16 +30,16 @@ echo "[RAVE]: Step 1: check system requirement..."
 # Check if R installed or R version is too low
 r_need_install=0
 
-if ! [ -x "$(command -v R)" ]; then
+if ! [ -x "$(command -v R.exe)" ]; then
   echo "[RAVE]: R is not detected by command - which R"
   r_need_install=1
 else	
 
-  r_path=$(which R)
+  r_path=$(which R.exe)
   echo "[RAVE]: R found at $r_path."
 
   # check R version
-  r_version=$(R --version 2>&1 | grep 'R version ' | egrep -o '[0-9]+\.[0-9]+\.[0-9]+')
+  r_version=$(R.exe --version 2>&1 | grep 'R version ' | egrep -o '[0-9]+\.[0-9]+\.[0-9]+')
   r_ver_major=$(echo $r_version | egrep -o '^[0-9]+')
   r_ver_minor=$(echo $r_version | egrep -o '([0-9]+)\.[0-9]+$' | egrep -o '^[0-9]+')
   r_ver_dev=$(echo $r_version | egrep -o '[0-9]+$')
@@ -98,22 +98,22 @@ if [ $start_step -gt 0 ]; then
   echo "[RAVE]: skipped"
 else
   # stringr
-  (Rscript -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'stringr'"
     exit 1
   }
   # devtools
-  (Rscript -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'devtools'"
     exit 1
   }
   # fftwtools
-  (Rscript -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
   # hdf5r
-  (Rscript -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org')") || {
+  (Rscript.exe -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
@@ -124,8 +124,8 @@ else
   
   
   # install RAVE
-  Rscript -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
-  Rscript -e "rave::check_dependencies(update_rave = FALSE, restart = FALSE)"
+  Rscript.exe -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
+  Rscript.exe -e "rave::check_dependencies(update_rave = FALSE, restart = FALSE)"
 
 fi
 
@@ -150,9 +150,9 @@ else
   }
   
   if [ $install_n27 -gt 0 ]; then
-    # Rscript -e "threeBrain::merge_brain()"
+    # Rscript.exe -e "threeBrain::merge_brain()"
     rm -r "$N27_PATH" 2> /dev/null
-    Rscript -e "threeBrain::brain_setup(use_python = FALSE)"
+    Rscript.exe -e "threeBrain::brain_setup(use_python = FALSE)"
     echo ""
   fi
 fi
@@ -162,18 +162,18 @@ echo "[RAVE]: Step 4: Check RAVE settings"
 if [ $start_step -gt 2 ]; then
   echo "[RAVE]: skipped"
 else
-  Rscript -e "require(rave); rave::arrange_modules(refresh = TRUE, reset = FALSE)" &> /dev/null
-  Rscript -e "rave::arrange_data_dir(TRUE, FALSE)" &> /dev/null
+  Rscript.exe -e "require(rave); rave::arrange_modules(refresh = TRUE, reset = FALSE)" &> /dev/null
+  Rscript.exe -e "rave::arrange_data_dir(TRUE, FALSE)" &> /dev/null
   
   # check data_dir
-  data_dir=$(Rscript -e "cat(as.character(rave::rave_options('data_dir')))")
-  raw_dir=$(Rscript -e "cat(as.character(rave::rave_options('raw_data_dir')))")
+  data_dir=$(Rscript.exe -e "cat(as.character(rave::rave_options('data_dir')))")
+  raw_dir=$(Rscript.exe -e "cat(as.character(rave::rave_options('raw_data_dir')))")
   echo "[RAVE]: RAW directory  - $raw_dir"
   echo "[RAVE]: Main directory - $data_dir"
   
   if [ ! -d "$raw_dir" ] || [ ! -d "$data_dir" ]; then
     echo "Please check existence of RAVE main data and raw data directory"
-    Rscript -e "rave::rave_options()" &>/dev/null
+    Rscript.exe -e "rave::rave_options()" &>/dev/null
   fi
   
 fi
@@ -183,7 +183,7 @@ echo "[RAVE]: Step 5: Check demo subject(s)"
 if [ $start_step -gt 3 ]; then
   echo "[RAVE]: skipped"
 else
-  data_dir=$(Rscript -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
+  data_dir=$(Rscript.exe -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
   echo "[RAVE]: Please select demo subject(s) to download. "
   echo "  Enter the corresponding indices (like 1,2,3), use ',' to separate."
   # check demo subject
@@ -200,13 +200,13 @@ else
   read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
   
   # get user's input
-  Rscript -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
+  Rscript.exe -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
 
 while true; do
     read -p "[RAVE]: RAVE installed. Want to start application? [Yes/No]: " yn
     case $yn in
-        [Yy]* ) Rscript -e "rave::start_rave()"; break;;
+        [Yy]* ) Rscript.exe -e "rave::start_rave()"; break;;
         [Nn]* ) break;;
         * ) echo "Please answer Yes/y or No/n.";;
     esac
