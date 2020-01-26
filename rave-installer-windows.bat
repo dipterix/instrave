@@ -62,6 +62,8 @@ echo %HOMESTR%
 
 REM %GITPATH% --login rave-installer-windows.sh
 
+if exist %TEMP%\RAVE.sh rm %TEMP%\RAVE.sh
+
 powershell -Command "Invoke-WebRequest %RAVEINSTSCRIPT% -OutFile %TEMP%\RAVE.sh"
 
 @echo on
