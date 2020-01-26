@@ -120,12 +120,12 @@ else
   }
   # dipsaus
   (Rscript.exe -e "utils::install.packages('dipsaus',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
-    echo "[RAVE]: Failed to install R package 'fftwtools'"
+    echo "[RAVE]: Failed to install R package 'dipsaus'"
     exit 1
   }
   # threeBrain
   (Rscript.exe -e "utils::install.packages('threeBrain',type='binary',lib=Sys.getenv('R_LIBS_USER'),repos='https://cloud.r-project.org')") || {
-    echo "[RAVE]: Failed to install R package 'fftwtools'"
+    echo "[RAVE]: Failed to install R package 'threeBrain'"
     exit 1
   }
   

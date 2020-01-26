@@ -1,6 +1,6 @@
 # subidx = '0 1,2, 3 -1 A 2b'
 # demo_subs = 'All All_that_are_not_installed KC YAB YAD YAF YAH YAI YAJ YAK'
-.libPaths(Sys.getenv('R_LIBS_USER'))
+
 
 demo_subs = unlist(strsplit(demo_subs, ' '))
 subidx = dipsaus::parse_svec(subidx, sep = "[, ]")

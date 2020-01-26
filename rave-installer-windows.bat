@@ -48,6 +48,8 @@ IF "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
     SET "PATH=%RPATH%\bin\i386;C:\Rtools\bin;%PATH%"
 )
 
+SET RAVE_RUNNING_OS=windows
+SET HOME=%HOMEPATH%\Documents
 
 REM %GITPATH% --login rave-installer-windows.sh
 %GITPATH% --login %TEMP%\RAVE.sh
