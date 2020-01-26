@@ -19,8 +19,6 @@ if exist %GITPATH% (
   SET /p=Press Enter/Return once installation is finished: 
 )
 
-powershell -Command "Invoke-WebRequest %RAVEINSTSCRIPT% -OutFile %TEMP%\RAVE.sh"
-
 SETLOCAL ENABLEEXTENSIONS
 SET RKEY=
 SET RPATH=
@@ -49,7 +47,23 @@ IF "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
 )
 
 SET RAVE_RUNNING_OS=windows
+
+
+SETLOCAL ENABLEEXTENSIONS
 SET HOME=%HOMEPATH%\Documents
+
+
+FOR /F "tokens=3* delims= " %%L IN ('reg.exe QUERY "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Personal') DO (
+    IF NOT "%%~L"=="" SET "HOME=%%~L"
+)
+
+echo %HOME%
+
+pause
+
+powershell -Command "Invoke-WebRequest %RAVEINSTSCRIPT% -OutFile %TEMP%\RAVE.sh"
+
+@echo on
 
 REM %GITPATH% --login rave-installer-windows.sh
 %GITPATH% --login %TEMP%\RAVE.sh

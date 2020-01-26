@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Check HOME variable, be windows compatible
+HOMESTR=$HOME
+HOME="${HOMESTR/\%USERPROFILE\%/$USERPROFILE\\}"
+
+
 # register global variables
 
 R_VER_MAJOR=3
@@ -136,8 +141,8 @@ else
   
   # install RAVE
   Rscript.exe -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
-  Rscript.exe -e "remotes::install_github('dipterix/rutabaga@develop' upgrade = FALSE, force = FALSE, quiet = TRUE)"
-  Rscript.exe -e "remotes::install_github('beauchamplab/ravebuiltins@migrate' upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  Rscript.exe -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  Rscript.exe -e "remotes::install_github('beauchamplab/ravebuiltins@migrate', upgrade = FALSE, force = FALSE, quiet = TRUE)"
 
 fi
 
