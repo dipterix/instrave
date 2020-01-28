@@ -37,7 +37,7 @@ else
   echo "[RAVE]: R found at $r_path."
 
   # check R version
-  r_version=$(R --version | grep 'R version ' | egrep -o '[0-9]+\.[0-9]+\.[0-9]+')
+  r_version=$(R --version 2>&1 | grep 'R version ' | egrep -o '[0-9]+\.[0-9]+\.[0-9]+')
   r_ver_major=$(echo $r_version | egrep -o '^[0-9]+')
   r_ver_minor=$(echo $r_version | egrep -o '([0-9]+)\.[0-9]+$' | egrep -o '^[0-9]+')
   r_ver_dev=$(echo $r_version | egrep -o '[0-9]+$')
