@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # register global variables
 
@@ -22,6 +22,7 @@ fi
 echo $start_step
 #exit 0
 
+clear -x
 echo "============ Welcome to RAVE installer (MacOS) ============";
 echo "[RAVE]: Step 1: check system requirement..."
 
@@ -55,6 +56,8 @@ else
   fi
 fi
 
+# r_need_install=1
+
 # If r_need_install > 0, need to install latest version of R
 if [ $r_need_install -gt 0 ]; then
   # download to ~/Download/RAVE_install
@@ -62,6 +65,7 @@ if [ $r_need_install -gt 0 ]; then
   mkdir -p "$INST_PATH"
   curl "https://cran.r-project.org/bin/macosx/el-capitan/base/R-latest.pkg" > "$INST_PATH/R-latest.pkg"
   
+  clear -x
   echo "[RAVE]: Waiting for the installer. Please follow the instructions from the R installer"
   open -W "$INST_PATH/R-latest.pkg"
 fi
@@ -70,14 +74,40 @@ fi
 ( (
   xcode-select --install 2>/dev/null
 ) && {
+  clear -x
   read -p "Press Enter/Return once command line tools are installed: "
 } ) || {
   echo "[RAVE]: Command line tools are already installed (skip)"
 }
 
 
+# install RStudio
+
+if [ ! -d "/Applications/RStudio.app" ]; then
+  # install RStudio. check version? 
+  # plutil -p /Applications/RStudio.app/Contents/Info.plist | grep CFBundleShortVersionString | grep -o "[[:digit:].]\+"
+  
+  # INST_PATH="$HOME/Downloads/RAVE_install"
+  # curl 
+  mkdir -p $INST_PATH
+  curl "https://rstudio.com/products/rstudio/download/#download" >> $INST_PATH/rstudio.html
+  RSTUDIO_URL=$(cat $INST_PATH/rstudio.html | grep -o --max-count=1 "https://download1.rstudio.org/desktop/macos/RStudio-[[:digit:].]\+.dmg")
+  curl $RSTUDIO_URL >> $INST_PATH/rstudio.dmg
+  
+  RSTUDIO_FNAME=$(echo $RSTUDIO_URL | grep -o "RStudio-[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+")
+  
+  open $INST_PATH/rstudio.dmg
+  clear -x
+  
+  echo "[RAVE]: Please drag RStudio.app to your Application folder to install RStudio"
+  read -p "Once installed, press Enter/Return to continue..."
+  
+fi
+
+
+clear -x
 # install packages for R
-echo "[RAVE]: Step 2: Install RAVE and its dependencies"
+echo "[RAVE]: Step 2: Install/Update RAVE and its dependencies"
 
 if [ $start_step -gt 0 ]; then
   echo "[RAVE]: skipped"
@@ -131,14 +161,17 @@ else
 fi
 
 
-
+clear -x
 echo "[RAVE]: Step 3: Download N27 Brain"
+
+install_n27=1
 if [ $start_step -gt 1 ]; then
   echo "[RAVE]: skipped"
 else
   # check if N27 brain exists
-  install_n27=1
+  
   [ -d "$N27_PATH" ] && {
+  
     echo "[RAVE]: N27 brain found at '$N27_PATH'"
     while true; do
         read -p "Do you want to re-download it? [Yes/y or No/n]: " yn
@@ -158,7 +191,7 @@ else
   fi
 fi
 
-
+clear -x
 echo "[RAVE]: Step 4: Check RAVE settings"
 if [ $start_step -gt 2 ]; then
   echo "[RAVE]: skipped"
@@ -171,6 +204,7 @@ else
   raw_dir=$($RUN_R -e "cat(as.character(rave::rave_options('raw_data_dir')))")
   
   if [ ! -d "$raw_dir" ]; then
+    
     echo "[RAVE]: Cannot find folder to store **raw** data directory ($raw_dir NOT FOUND)"
     while true; do
         read -p "Please enter the path to raw data folder: " -e raw_dir
@@ -203,7 +237,7 @@ else
   echo "[RAVE]: Main directory - $data_dir"
 fi
 
-
+clear -x
 echo "[RAVE]: Step 5: Check demo subject(s)"
 if [ $start_step -gt 3 ]; then
   echo "[RAVE]: skipped"
@@ -228,6 +262,7 @@ else
   $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
 
+clear -x
 while true; do
     read -p "[RAVE]: RAVE installed. Want to start application? [Yes/No]: " yn
     case $yn in
