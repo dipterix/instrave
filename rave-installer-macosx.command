@@ -11,6 +11,7 @@ HOME_BSLASH=$(echo "$HOME" | sed "s/\//\\\\\\\\/g")
 DEMO_SUB_STR="All All_that_are_not_installed KC YAB YAD YAF YAH YAI YAJ YAK"
 DEMO_SUBS=( $DEMO_SUB_STR );
 RUN_R="Rscript --no-save --no-restore --no-site-file --no-init-file"
+ALLYES=1
 
 if [ "$#" -ne 1 ]; then
   start_step=0
@@ -170,18 +171,22 @@ if [ $start_step -gt 1 ]; then
 else
   # check if N27 brain exists
   
-  [ -d "$N27_PATH" ] && {
-  
-    echo "[RAVE]: N27 brain found at '$N27_PATH'"
-    while true; do
-        read -p "Do you want to re-download it? [Yes/y or No/n]: " yn
-        case $yn in
-            [Yy]* ) install_n27=1; break;;
-            [Nn]* ) install_n27=0; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-  }
+  if [ $ALLYES -lt 1 ]; then
+    [ -d "$N27_PATH" ] && {
+    
+      echo "[RAVE]: N27 brain found at '$N27_PATH'"
+      while true; do
+          read -p "Do you want to re-download it? [Yes/y or No/n]: " yn
+          case $yn in
+              [Yy]* ) install_n27=1; break;;
+              [Nn]* ) install_n27=0; break;;
+              * ) echo "Please answer yes or no.";;
+          esac
+      done
+    }
+  else
+    install_n27=1
+  fi
   
   if [ $install_n27 -gt 0 ]; then
     # $RUN_R -e "threeBrain::merge_brain()"
@@ -238,9 +243,11 @@ else
 fi
 
 clear -x
-echo "[RAVE]: Step 5: Check demo subject(s)"
+echo "[RAVE]: Step 5: Check demo subject(s), modules, and misc.."
 if [ $start_step -gt 3 ]; then
   echo "[RAVE]: skipped"
+elif [ $ALLYES -lt 1 ]; then
+  $($RUN_R -e "rave:::check_dependencies2()")
 else
   data_dir=$($RUN_R -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
   echo "[RAVE]: Please select demo subject(s) to download. "
@@ -262,13 +269,29 @@ else
   $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
 fi
 
-clear -x
-while true; do
-    read -p "[RAVE]: RAVE installed. Want to start application? [Yes/No]: " yn
-    case $yn in
-        [Yy]* ) $RUN_R -e "rave::start_rave()"; break;;
-        [Nn]* ) break;;
-        * ) echo "Please answer Yes/y or No/n.";;
-    esac
-done
+
+# echo to ~/rave_module/rave_startup.R
+mkdir -p ~/rave_module
+echo "# Select a line, use 'command + return' to run that line" > ~/rave_module/rave_startup.R
+
+echo "" >> ~/rave_module/rave_startup.R
+echo "# To launch RAVE - main application" >> ~/rave_module/rave_startup.R
+echo "rave::start_rave()" >> ~/rave_module/rave_startup.R
+
+echo "" >> ~/rave_module/rave_startup.R
+echo "# To open preprocess app" >> ~/rave_module/rave_startup.R
+echo "rave::rave_preprocess()" >> ~/rave_module/rave_startup.R
+
+echo "" >> ~/rave_module/rave_startup.R
+echo "# To set option" >> ~/rave_module/rave_startup.R
+echo "rave::rave_options()" >> ~/rave_module/rave_startup.R
+
+echo "" >> ~/rave_module/rave_startup.R
+
+open -a rstudio ~/rave_module/rave_startup.R
+
+
+$RUN_R -e "rave::start_rave()"
+
+exit 0
 
