@@ -158,6 +158,9 @@ else
   $RUN_R -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
   $RUN_R -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
   $RUN_R -e "remotes::install_github('beauchamplab/ravebuiltins@migrate2', upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  
+  $RUN_R -e "remotes::install_github('dipterix/dipsaus', upgrade = FALSE, force = TRUE, type = 'binary')"
+  $RUN_R -e "remotes::install_github('dipterix/threeBrain', upgrade = FALSE, force = TRUE, type = 'binary')"
 
 fi
 
@@ -247,8 +250,6 @@ echo "[RAVE]: Step 5: Check demo subject(s), modules, and misc.."
 if [ $start_step -gt 3 ]; then
   echo "[RAVE]: skipped"
 elif [ $ALLYES -lt 1 ]; then
-  $($RUN_R -e "rave:::check_dependencies2()")
-else
   data_dir=$($RUN_R -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
   echo "[RAVE]: Please select demo subject(s) to download. "
   echo "  Enter the corresponding indices (like 1,2,3), use ',' to separate."
@@ -267,6 +268,8 @@ else
   
   # get user's input
   $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
+else
+  $($RUN_R -e "rave:::check_dependencies2()")
 fi
 
 
