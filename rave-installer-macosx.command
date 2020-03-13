@@ -110,41 +110,50 @@ clear -x
 # install packages for R
 echo "[RAVE]: Step 2: Install/Update RAVE and its dependencies"
 
+# get R_LIBS_USER, for example, ~/Library/R/3.6/library
+r_lib_user=$($RUN_R -e "cat(normalizePath(Sys.getenv('R_LIBS_USER'), mustWork=FALSE))")
+
+if [ ! -d $r_lib_user ]; then
+  mkdir -p $r_lib_user
+else
+  # Remove all locked files
+  rm -rf $r_lib_user/00LOCK*
+fi
+
 if [ $start_step -gt 0 ]; then
   echo "[RAVE]: skipped"
 else
   # Rcpp
-  ($RUN_R -e "utils::install.packages('Rcpp',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('Rcpp',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'Rcpp'"
     exit 1
   }
   # stringr
-  ($RUN_R -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('stringr',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'stringr'"
     exit 1
   }
   # devtools
-  ($RUN_R -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('devtools',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'devtools'"
     exit 1
   }
   # fftwtools
-  ($RUN_R -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('fftwtools',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
   # hdf5r
-  ($RUN_R -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('hdf5r',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'fftwtools'"
     exit 1
   }
   # dipsaus
-  ($RUN_R -e "utils::install.packages('dipsaus',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('dipsaus',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'dipsaus'"
-    exit 1
   }
   # threeBrain
-  ($RUN_R -e "utils::install.packages('threeBrain',type='binary',repos='https://cloud.r-project.org')") || {
+  ($RUN_R -e "utils::install.packages('threeBrain',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'threeBrain'"
     exit 1
   }
@@ -153,13 +162,20 @@ else
   # install brew if fftw not found
   # /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   
-  
   # install RAVE
+  rm -rf $r_lib_user/00LOCK*
+  $RUN_R -e "remotes::install_github('dipterix/dipsaus', upgrade = FALSE, force = TRUE, type = 'binary')"
+  
+  rm -rf $r_lib_user/00LOCK*
   $RUN_R -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
+  
+  rm -rf $r_lib_user/00LOCK*
   $RUN_R -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
+  
+  rm -rf $r_lib_user/00LOCK*
   $RUN_R -e "remotes::install_github('beauchamplab/ravebuiltins@migrate2', upgrade = FALSE, force = FALSE, quiet = TRUE)"
   
-  $RUN_R -e "remotes::install_github('dipterix/dipsaus', upgrade = FALSE, force = TRUE, type = 'binary')"
+  rm -rf $r_lib_user/00LOCK*
   $RUN_R -e "remotes::install_github('dipterix/threeBrain', upgrade = FALSE, force = TRUE, type = 'binary')"
 
 fi
