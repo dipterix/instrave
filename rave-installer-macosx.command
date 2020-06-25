@@ -45,14 +45,23 @@ else
   r_ver_dev=$(echo $r_version | egrep -o '[0-9]+$')
 
 	
-  if [ $r_ver_major -lt $R_VER_MAJOR ]; then
-    echo "[RAVE]: R major version is too low"
+  if [ $r_ver_major -gt $R_VER_MAJOR ]; then
+    echo "[RAVE]: R version - OK"
+    r_need_install=0
+  elif [ $r_ver_major -lt $R_VER_MAJOR ]; then
+    echo "[RAVE]: R major version too low"
     r_need_install=1
+  elif [ $r_ver_minor -gt $R_VER_MINOR ]; then
+    echo "[RAVE]: R version - OK"
+    r_need_install=0
   elif [ $r_ver_minor -lt $R_VER_MINOR ]; then
-    echo "[RAVE]: R minor version is too low"
+    echo "[RAVE]: R minor version too low"
     r_need_install=1
-  elif [ $r_ver_dev -lt $R_VER_DEV ]; then
-    echo "[RAVE]: R minor version is too low"
+  elif [ $r_ver_dev -ge $R_VER_DEV ]; then
+    echo "[RAVE]: R version - OK"
+    r_need_install=0
+  else
+    echo "[RAVE]: R dev too low"
     r_need_install=1
   fi
 fi
@@ -64,7 +73,7 @@ if [ $r_need_install -gt 0 ]; then
   # download to ~/Download/RAVE_install
   echo "[RAVE]: Downloading latest version of R from CRAN"
   mkdir -p "$INST_PATH"
-  curl "https://cran.r-project.org/bin/macosx/el-capitan/base/R-latest.pkg" > "$INST_PATH/R-latest.pkg"
+  curl "https://cran.r-project.org/bin/macosx/base/R-release.pkg" > "$INST_PATH/R-latest.pkg"
   
   clear -x
   echo "[RAVE]: Waiting for the installer. Please follow the instructions from the R installer"
@@ -90,7 +99,14 @@ if [ ! -d "/Applications/RStudio.app" ]; then
   
   # INST_PATH="$HOME/Downloads/RAVE_install"
   # curl 
+  
+  # make sure the directory is clean
+  if [ -d $INST_PATH ]; then
+    rm -r $INST_PATH
+  fi
+  
   mkdir -p $INST_PATH
+  
   curl "https://rstudio.com/products/rstudio/download/#download" >> $INST_PATH/rstudio.html
   RSTUDIO_URL=$(cat $INST_PATH/rstudio.html | grep -o --max-count=1 "https://download1.rstudio.org/desktop/macos/RStudio-[[:digit:].]\+.dmg")
   curl $RSTUDIO_URL >> $INST_PATH/rstudio.dmg
@@ -153,7 +169,7 @@ else
     echo "[RAVE]: Failed to install R package 'dipsaus'"
   }
   # threeBrain
-  ($RUN_R -e "utils::install.packages('threeBrain',type='binary',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
+  ($RUN_R -e "utils::install.packages('threeBrain',type='source',repos='https://cloud.r-project.org',lib='$r_lib_user')") || {
     echo "[RAVE]: Failed to install R package 'threeBrain'"
     exit 1
   }
