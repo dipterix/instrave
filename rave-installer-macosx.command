@@ -21,7 +21,13 @@ fi
 
 
 echo $start_step
-#exit 0
+
+
+if [ -d $INST_PATH ]; then
+  rm -r $INST_PATH
+fi
+
+mkdir -p $INST_PATH
 
 clear -x
 echo "============ Welcome to RAVE installer (MacOS) ============";
@@ -90,7 +96,6 @@ fi
   echo "[RAVE]: Command line tools are already installed (skip)"
 }
 
-
 # install RStudio
 
 if [ ! -d "/Applications/RStudio.app" ]; then
@@ -99,11 +104,6 @@ if [ ! -d "/Applications/RStudio.app" ]; then
   
   # INST_PATH="$HOME/Downloads/RAVE_install"
   # curl 
-  
-  # make sure the directory is clean
-  if [ -d $INST_PATH ]; then
-    rm -r $INST_PATH
-  fi
   
   mkdir -p $INST_PATH
   
@@ -120,6 +120,9 @@ if [ ! -d "/Applications/RStudio.app" ]; then
   read -p "Once installed, press Enter/Return to continue..."
   
 fi
+
+# Download schell commands
+curl "https://raw.githubusercontent.com/dipterix/instrave/master/RAVE.zip" > $INST_PATH/RAVE.zip
 
 
 clear -x
@@ -305,7 +308,7 @@ else
 fi
 
 # Make command files and save to desktop
-curl "https://raw.githubusercontent.com/dipterix/instrave/master/R/RAVE" > ~/Desktop/RAVE
+tar -xzpf $INST_PATH/RAVE.zip -C ~/Desktop
 chmod 777 ~/Desktop/RAVE
 
 # echo to ~/rave_module/rave_startup.R
@@ -329,7 +332,7 @@ echo "" >> ~/rave_module/rave_startup.R
 open -a rstudio ~/rave_module/rave_startup.R
 
 
-$RUN_R -e "rave::start_rave()"
+# $RUN_R -e "rave::start_rave()"
 
 exit 0
 
