@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-Rscript --no-restore --no-save -e "rave::start_rave()"
-
