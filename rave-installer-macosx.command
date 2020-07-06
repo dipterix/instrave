@@ -304,6 +304,9 @@ else
   $($RUN_R -e "rave:::check_dependencies2()")
 fi
 
+# Make command files and save to desktop
+curl "https://raw.githubusercontent.com/dipterix/instrave/master/R/RAVE" > ~/Desktop/RAVE
+chmod 777 ~/Desktop/RAVE
 
 # echo to ~/rave_module/rave_startup.R
 mkdir -p ~/rave_module
