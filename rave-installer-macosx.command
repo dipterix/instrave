@@ -280,31 +280,33 @@ else
   echo "[RAVE]: Main directory - $data_dir"
 fi
 
-clear -x
-echo "[RAVE]: Step 5: Check demo subject(s), modules, and misc.."
-if [ $start_step -gt 3 ]; then
-  echo "[RAVE]: skipped"
-elif [ $ALLYES -lt 1 ]; then
-  data_dir=$($RUN_R -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
-  echo "[RAVE]: Please select demo subject(s) to download. "
-  echo "  Enter the corresponding indices (like 1,2,3), use ',' to separate."
-  # check demo subject
-  for ii in "${!DEMO_SUBS[@]}"
-  do
-    sub="${DEMO_SUBS[ $ii ]}"
-    subdir="$data_dir/demo/$sub"
-    if [ -d "$subdir" ]; then
-      echo "  $ii $sub (installed)"
-    else
-      echo "  $ii $sub"
-    fi
-  done
-  read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
-  
-  # get user's input
-  $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
-else
-  $($RUN_R -e "rave:::check_dependencies2()")
+if false; then
+  clear -x
+  echo "[RAVE]: Step 5: Check demo subject(s), modules, and misc.."
+  if [ $start_step -gt 3 ]; then
+    echo "[RAVE]: skipped"
+  elif [ $ALLYES -lt 1 ]; then
+    data_dir=$($RUN_R -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
+    echo "[RAVE]: Please select demo subject(s) to download. "
+    echo "  Enter the corresponding indices (like 1,2,3), use ',' to separate."
+    # check demo subject
+    for ii in "${!DEMO_SUBS[@]}"
+    do
+      sub="${DEMO_SUBS[ $ii ]}"
+      subdir="$data_dir/demo/$sub"
+      if [ -d "$subdir" ]; then
+        echo "  $ii $sub (installed)"
+      else
+        echo "  $ii $sub"
+      fi
+    done
+    read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
+    
+    # get user's input
+    $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
+  else
+    $($RUN_R -e "rave:::check_dependencies2()")
+  fi
 fi
 
 # Make command files and save to desktop
@@ -314,6 +316,10 @@ chmod 777 ~/Desktop/RAVE
 # echo to ~/rave_module/rave_startup.R
 mkdir -p ~/rave_module
 echo "# Select a line, use 'command + return' to run that line" > ~/rave_module/rave_startup.R
+
+echo "" >> ~/rave_module/rave_startup.R
+echo "# Install demo data, finalize installation (optional)" >> ~/rave_module/rave_startup.R
+echo "rave::finalize_installation()" >> ~/rave_module/rave_startup.R
 
 echo "" >> ~/rave_module/rave_startup.R
 echo "# To launch RAVE - main application" >> ~/rave_module/rave_startup.R
