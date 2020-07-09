@@ -186,7 +186,7 @@ else
   $RUN_R -e "remotes::install_github('dipterix/dipsaus', upgrade = FALSE, force = TRUE, type = 'binary')"
   
   rm -rf $r_lib_user/00LOCK*
-  $RUN_R -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
+  $RUN_R -e "remotes::install_github('beauchamplab/rave@dev-1.1', upgrade = FALSE, force = TRUE, type = 'binary')"
   
   rm -rf $r_lib_user/00LOCK*
   $RUN_R -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
@@ -201,41 +201,7 @@ fi
 
 
 clear -x
-echo "[RAVE]: Step 3: Download N27 Brain"
-
-install_n27=1
-if [ $start_step -gt 1 ]; then
-  echo "[RAVE]: skipped"
-else
-  # check if N27 brain exists
-  
-  if [ $ALLYES -lt 1 ]; then
-    [ -d "$N27_PATH" ] && {
-    
-      echo "[RAVE]: N27 brain found at '$N27_PATH'"
-      while true; do
-          read -p "Do you want to re-download it? [Yes/y or No/n]: " yn
-          case $yn in
-              [Yy]* ) install_n27=1; break;;
-              [Nn]* ) install_n27=0; break;;
-              * ) echo "Please answer yes or no.";;
-          esac
-      done
-    }
-  else
-    install_n27=1
-  fi
-  
-  if [ $install_n27 -gt 0 ]; then
-    # $RUN_R -e "threeBrain::merge_brain()"
-    rm -r "$N27_PATH" 2> /dev/null
-    $RUN_R -e "threeBrain::brain_setup(use_python = FALSE)"
-    echo ""
-  fi
-fi
-
-clear -x
-echo "[RAVE]: Step 4: Check RAVE settings"
+echo "[RAVE]: Step 3: Check RAVE settings"
 if [ $start_step -gt 2 ]; then
   echo "[RAVE]: skipped"
 else
@@ -280,34 +246,6 @@ else
   echo "[RAVE]: Main directory - $data_dir"
 fi
 
-if false; then
-  clear -x
-  echo "[RAVE]: Step 5: Check demo subject(s), modules, and misc.."
-  if [ $start_step -gt 3 ]; then
-    echo "[RAVE]: skipped"
-  elif [ $ALLYES -lt 1 ]; then
-    data_dir=$($RUN_R -e "cat(as.character(normalizePath(rave::rave_options('data_dir'))))")
-    echo "[RAVE]: Please select demo subject(s) to download. "
-    echo "  Enter the corresponding indices (like 1,2,3), use ',' to separate."
-    # check demo subject
-    for ii in "${!DEMO_SUBS[@]}"
-    do
-      sub="${DEMO_SUBS[ $ii ]}"
-      subdir="$data_dir/demo/$sub"
-      if [ -d "$subdir" ]; then
-        echo "  $ii $sub (installed)"
-      else
-        echo "  $ii $sub"
-      fi
-    done
-    read -p "Please select which subjects to download. Leave it blank to skip: " -e subidx
-    
-    # get user's input
-    $RUN_R -e "demo_subs='$DEMO_SUB_STR';subidx='$subidx';source('https://raw.githubusercontent.com/dipterix/instrave/master/R/demo_install.R', echo = FALSE);"
-  else
-    $($RUN_R -e "rave:::check_dependencies2()")
-  fi
-fi
 
 # Make command files and save to desktop
 tar -xzpf $INST_PATH/RAVE.zip -C ~/Desktop
