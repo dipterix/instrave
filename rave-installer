@@ -186,7 +186,7 @@ else
   $RUN_R -e "remotes::install_github('dipterix/dipsaus', upgrade = FALSE, force = TRUE, type = 'binary')"
   
   rm -rf $r_lib_user/00LOCK*
-  $RUN_R -e "remotes::install_github('beauchamplab/rave@dev-1.1', upgrade = FALSE, force = TRUE, type = 'binary')"
+  $RUN_R -e "remotes::install_github('beauchamplab/rave', upgrade = FALSE, force = TRUE, type = 'binary')"
   
   rm -rf $r_lib_user/00LOCK*
   $RUN_R -e "remotes::install_github('dipterix/rutabaga@develop', upgrade = FALSE, force = FALSE, quiet = TRUE)"
