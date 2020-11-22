@@ -1,3 +1,4 @@
 .eggs
 rave-installer
 __pycache__
+*.app
