@@ -9,15 +9,27 @@ if(!require(remotes)){
     type = 'source'
   )
 }
-if(!require(docopt)){
-  utils::install.packages(
-    pkgs = "docopt",
+
+inst_github <- function(..., upgrade = 'always'){
+  remotes::install_github(
+    repo = c(...),
+    upgrade = upgrade,
     repos = repos,
-    clean = TRUE,
-    type = 'source'
+    type = 'binary',
+    auth_token = git_token,
+    dependencies = TRUE,
+    Ncpus = parallel::detectCores()
   )
 }
 
+# if(!require(docopt)){
+#   utils::install.packages(
+#     pkgs = "docopt",
+#     repos = repos,
+#     clean = TRUE,
+#     type = 'source'
+#   )
+# }
 # 
 # doc <- "Usage: install-rave [(BREW_PATH)]
 # 
@@ -32,17 +44,6 @@ if(!require(docopt)){
 # opt <- docopt::docopt(doc)
 # 
 # 
-# inst_github <- function(..., upgrade = 'always'){
-#   remotes::install_github(
-#     repo = c(...),
-#     upgrade = upgrade,
-#     repos = repos,
-#     type = 'binary',
-#     auth_token = git_token,
-#     dependencies = TRUE,
-#     Ncpus = parallel::detectCores()
-#   )
-# }
 # 
 # # Add brew to path /opt/homebrew/bin:/opt/homebrew/sbin
 # if(!length(opt$BREW_PATH) || !file.exists(file.path(opt$BREW_PATH, 'bin', 'brew'))){
