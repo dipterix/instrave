@@ -118,10 +118,17 @@ execute eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
 execute $HOMEBREW_PREFIX/bin/brew install hdf5 fftw libgit2 libxml2 pkg-config
 
 
+/usr/bin/env PATH=$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH
 
 if [[ "$UNAME_MACHINE" == "arm64" ]]; then
   execute $HOMEBREW_PREFIX/bin/brew tap dipterix/cask
-  execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
+  
+  if $HOMEBREW_PREFIX/bin/brew ls --cask r-arm > /dev/null; then
+    execute $HOMEBREW_PREFIX/bin/brew reinstall --cask r-arm
+  else
+    execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
+  fi
+  
   
   cd /tmp
   gcc_fname="gfortran-f51f1da0-darwin20.0-arm64.tar.gz"
@@ -129,15 +136,20 @@ if [[ "$UNAME_MACHINE" == "arm64" ]]; then
   execute_sudo tar fvxz "$gcc_fname" -C /
   execute_sudo rm "$gcc_fname"
 else
-  execute $HOMEBREW_PREFIX/bin/brew install --cask r
+  if $HOMEBREW_PREFIX/bin/brew ls --cask r > /dev/null; then
+    execute $HOMEBREW_PREFIX/bin/brew reinstall --cask r
+  else
+    execute $HOMEBREW_PREFIX/bin/brew install --cask r
+  fi
 fi
 
 
+
 # Check if rstudio exists, if so, update to the newest
-if brew ls --cask rstudio > /dev/null; then
+if $HOMEBREW_PREFIX/bin/brew ls --cask rstudio > /dev/null; then
   # The package is installed
   echo "RStudio has been installed by brew"
-  execute $HOMEBREW_PREFIX/bin/brew reinstall --cask rstudio
+  execute $HOMEBREW_PREFIX/bin/brew remove --cask rstudio
 else
   # The package is not installed
   echo "Nah"
