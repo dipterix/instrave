@@ -1,4 +1,3 @@
-git_token <- "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"
 repos <- "https://cloud.r-project.org"
 # Check if remotes is installed
 if(!require(remotes)){
@@ -15,8 +14,7 @@ inst_github <- function(..., upgrade = 'always'){
     repo = c(...),
     upgrade = upgrade,
     repos = repos,
-    type = 'binary',
-    auth_token = git_token,
+    type = 'source',
     dependencies = TRUE,
     Ncpus = parallel::detectCores()
   )
