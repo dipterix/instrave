@@ -146,8 +146,9 @@ else
   then
     execute_sudo rm -r "$rs_path"
   fi
-  execute $HOMEBREW_PREFIX/bin/brew install --cask rstudio
 fi
+
+execute $HOMEBREW_PREFIX/bin/brew install --cask rstudio
 
 # R has been installed
 /usr/bin/env PATH=$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH Rscript --no-save -e "$(curl -fsSL https://raw.githubusercontent.com/dipterix/instrave/master/brew/install-rave.R)"

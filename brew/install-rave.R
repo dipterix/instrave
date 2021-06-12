@@ -61,8 +61,8 @@ inst_github <- function(..., upgrade = 'always'){
 # )
 
 # This will bugged out
-inst_github("beauchamplab/ravebuiltins@migrate2")
 inst_github("beauchamplab/rave")
+inst_github("beauchamplab/ravebuiltins@migrate2")
 
 
 
