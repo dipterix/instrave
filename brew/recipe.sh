@@ -1,28 +1,18 @@
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew create --tap=dipterix/cask --cask --set-name r-arm https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.1.0-arm64.pkg
 brew create --tap=dipterix/cask --cask --set-name rave-arm https://github.com/dipterix/instrave/archive/refs/tags/0.0.3.tar.gz
 
-# brew create --cask --set-name rave https://github.com/dipterix/instrave/archive/refs/tags/0.0.2.tar.gz
+brew create --tap=dipterix/cask --cask --set-name r-arm-gfortran https://mac.r-project.org/libs-arm64/gfortran-f51f1da0-darwin20.0-arm64.tar.gz
+brew install --cask rave-arm
 
-brew create --set-name rave-m1 https://github.com/beauchamplab/rave/archive/refs/tags/v0.1.9-beta.tar.gz
-
-brew create --cask --set-name r-m1 https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.1.0-arm64.pkg
-
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-rm /opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/rave.rb
-arch -arm64 brew install --verbose --debug --build-from-source -i rave
-
-brew install gcc
-
-Rscript --no-save "install-rave.R"
-
-brew install --cask rave-m1
+/usr/bin/env PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH Rscript --no-save -e "$(curl -fsSL https://raw.githubusercontent.com/dipterix/instrave/master/brew/install-rave.R)"
 
 brew edit --cask rave-m1
 open -e /opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/rave-m1.rb
 open -e /opt/homebrew/Library/Taps/dipterix/homebrew-cask/Casks/r-arm.rb
 open -e /opt/homebrew/Library/Taps/dipterix/homebrew-cask/Casks/rave-arm.rb
+open -e /opt/homebrew/Library/Taps/dipterix/homebrew-cask/Casks/r-arm-gfortran.rb
 
 /opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/rave.rb
 

@@ -61,18 +61,8 @@ inst_github <- function(..., upgrade = 'always'){
 # )
 
 # This will bugged out
-inst_github("beauchamplab/ravebuiltins@migrate2", "beauchamplab/rave")
-
-
-
-utils::install.packages(
-  "raveio",
-  repos = repos,
-  clean = TRUE,
-  type = 'source'
-)
-
-
+inst_github("beauchamplab/ravebuiltins@migrate2")
+inst_github("beauchamplab/rave")
 
 
 
