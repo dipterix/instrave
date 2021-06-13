@@ -125,7 +125,7 @@ R_is_arm=false
 is_osx=false
 execute $HOMEBREW_PREFIX/bin/brew tap dipterix/cask
 # Check if R has been installed
-if [[ -x $(R --version) ]]; then
+if [[ -z $(which R) ]]; then
   echo "No R is in the path"
 else
   has_R=$(Rscript --no-save -e "cat(tolower(isTRUE(R.version[['major']]>=4&&R.version[['minor']]>=1)))")
