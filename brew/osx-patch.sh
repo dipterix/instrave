@@ -134,7 +134,7 @@ fi
 
 # check if it's mac M1 chip
 if [[ "$UNAME_MACHINE" == "arm64" && $is_osx && $has_R ]]  ; then
-  osx_arm=true
+  is_osx=true
   # Check if arch is arm
   R_is_arm=$(Rscript --no-save -e "cat(tolower(isTRUE(Sys.info()[['machine']]=='arm64')))")
   if $R_is_arm; then
@@ -162,17 +162,17 @@ else
   if [[ "$UNAME_MACHINE" == "arm64" && $is_osx ]]  ; then
     $HOMEBREW_PREFIX/bin/brew remove --cask r-arm
     $HOMEBREW_PREFIX/bin/brew install --cask r-arm
-    osx_arm=true
+    is_osx=true
   else
     $HOMEBREW_PREFIX/bin/brew remove --cask r
     $HOMEBREW_PREFIX/bin/brew install --cask r
-    osx_arm=false
+    is_osx=false
   fi
 fi
 
 
 
-if $osx_arm; then
+if $is_osx; then
   cd /tmp
   gcc_fname="gfortran-f51f1da0-darwin20.0-arm64.tar.gz"
   execute curl -O https://mac.r-project.org/libs-arm64/$gcc_fname
