@@ -120,18 +120,63 @@ execute $HOMEBREW_PREFIX/bin/brew install hdf5 fftw libgit2 libxml2 pkg-config
 
 /usr/bin/env PATH=$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH
 
-if [[ "$UNAME_MACHINE" == "arm64" ]]; then
-  execute $HOMEBREW_PREFIX/bin/brew tap dipterix/cask
-  
-  execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
-  
+has_R=false
+R_is_arm=false
+is_osx=false
+execute $HOMEBREW_PREFIX/bin/brew tap dipterix/cask
+# Check if R has been installed
+if [[ $(which R) ]]; then
+  # R has been installed, check if R >= 4.1
+  has_R=$(Rscript --no-save -e "cat(tolower(isTRUE(R.version[['major']]>=4&&R.version[['minor']]>=1)))")
+  is_osx=$(Rscript --no-save -e "cat(tolower(isTRUE(Sys.info()[['sysname']]=='Darwin')))")
+fi
+
+# check if it's mac M1 chip
+if [[ "$UNAME_MACHINE" == "arm64" && $is_osx && $has_R ]]  ; then
+  osx_arm=true
+  # Check if arch is arm
+  R_is_arm=$(Rscript --no-save -e "cat(tolower(isTRUE(Sys.info()[['machine']]=='arm64')))")
+  if $R_is_arm; then
+    ohai "Apple ARM chip, R correctly installed"
+  else 
+    ohai "Apple ARM chip, but x86 R was installed... Reinstalling R"
+    has_R=false
+    R_is_arm=true
+  fi
+fi
+
+if $has_R; then
+  echo "---------------------------------------------"
+  echo "R has been installed, will not re-install"
+  echo "  If you want to install R, please run"
+  echo 
+  if [[ "$UNAME_MACHINE" == "arm64" && $is_osx ]]  ; then
+    ohai "$HOMEBREW_PREFIX/bin/brew" "install" "r-arm"
+  else
+    ohai "$HOMEBREW_PREFIX/bin/brew" "install" "r"
+  fi
+  echo
+  echo "---------------------------------------------"
+else
+  if [[ "$UNAME_MACHINE" == "arm64" && $is_osx ]]  ; then
+    execute $HOMEBREW_PREFIX/bin/brew uninstall --cask r-arm
+    execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
+    osx_arm=true
+  else
+    execute $HOMEBREW_PREFIX/bin/brew uninstall --cask r
+    execute $HOMEBREW_PREFIX/bin/brew install --cask r
+    osx_arm=false
+  fi
+fi
+
+
+
+if $osx_arm; then
   cd /tmp
   gcc_fname="gfortran-f51f1da0-darwin20.0-arm64.tar.gz"
-  curl -O https://mac.r-project.org/libs-arm64/$gcc_fname
+  execute curl -O https://mac.r-project.org/libs-arm64/$gcc_fname
   execute_sudo tar fvxz "$gcc_fname" -C /
   execute_sudo rm "$gcc_fname"
-else
-  execute $HOMEBREW_PREFIX/bin/brew install --cask r
 fi
 
 
