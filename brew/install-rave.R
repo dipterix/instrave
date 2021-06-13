@@ -23,10 +23,10 @@ inst_github("beauchamplab/rave")
 inst_github("beauchamplab/ravebuiltins@migrate2")
 
 # Finalize installation
-rave::check_dependencies(update_rave = FALSE, restart = FALSE, nightly = TRUE, demo_data = TRUE)
 
 # N27 Brain
 invisible(threeBrain::merge_brain())
 
+rave::check_dependencies(update_rave = FALSE, restart = FALSE, nightly = TRUE, demo_data = TRUE)
 
 
