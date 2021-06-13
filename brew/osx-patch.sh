@@ -123,12 +123,7 @@ execute $HOMEBREW_PREFIX/bin/brew install hdf5 fftw libgit2 libxml2 pkg-config
 if [[ "$UNAME_MACHINE" == "arm64" ]]; then
   execute $HOMEBREW_PREFIX/bin/brew tap dipterix/cask
   
-  if $HOMEBREW_PREFIX/bin/brew ls --cask r-arm > /dev/null; then
-    execute $HOMEBREW_PREFIX/bin/brew reinstall --cask r-arm
-  else
-    execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
-  fi
-  
+  execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
   
   cd /tmp
   gcc_fname="gfortran-f51f1da0-darwin20.0-arm64.tar.gz"
@@ -136,11 +131,7 @@ if [[ "$UNAME_MACHINE" == "arm64" ]]; then
   execute_sudo tar fvxz "$gcc_fname" -C /
   execute_sudo rm "$gcc_fname"
 else
-  if $HOMEBREW_PREFIX/bin/brew ls --cask r > /dev/null; then
-    execute $HOMEBREW_PREFIX/bin/brew reinstall --cask r
-  else
-    execute $HOMEBREW_PREFIX/bin/brew install --cask r
-  fi
+  execute $HOMEBREW_PREFIX/bin/brew install --cask r
 fi
 
 
