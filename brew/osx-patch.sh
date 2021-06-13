@@ -126,11 +126,10 @@ is_osx=false
 execute $HOMEBREW_PREFIX/bin/brew tap dipterix/cask
 # Check if R has been installed
 if [[ -x $(R --version) ]]; then
-  # R has been installed, check if R >= 4.1
+  echo "No R is in the path"
+else
   has_R=$(Rscript --no-save -e "cat(tolower(isTRUE(R.version[['major']]>=4&&R.version[['minor']]>=1)))")
   is_osx=$(Rscript --no-save -e "cat(tolower(isTRUE(Sys.info()[['sysname']]=='Darwin')))")
-else
-  echo "No R is in the path"
 fi
 
 # check if it's mac M1 chip
