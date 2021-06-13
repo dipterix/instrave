@@ -159,12 +159,12 @@ if $has_R; then
   echo "---------------------------------------------"
 else
   if [[ "$UNAME_MACHINE" == "arm64" && $is_osx ]]  ; then
-    execute $HOMEBREW_PREFIX/bin/brew uninstall --cask r-arm
-    execute $HOMEBREW_PREFIX/bin/brew install --cask r-arm
+    $HOMEBREW_PREFIX/bin/brew remove --cask r-arm
+    $HOMEBREW_PREFIX/bin/brew install --cask r-arm
     osx_arm=true
   else
-    execute $HOMEBREW_PREFIX/bin/brew uninstall --cask r
-    execute $HOMEBREW_PREFIX/bin/brew install --cask r
+    $HOMEBREW_PREFIX/bin/brew remove --cask r
+    $HOMEBREW_PREFIX/bin/brew install --cask r
     osx_arm=false
   fi
 fi
@@ -185,7 +185,7 @@ fi
 if $HOMEBREW_PREFIX/bin/brew ls --cask rstudio > /dev/null; then
   # The package is installed
   echo "RStudio has been installed by brew"
-  execute $HOMEBREW_PREFIX/bin/brew remove --cask rstudio
+  $HOMEBREW_PREFIX/bin/brew remove --cask rstudio
 else
   # The package is not installed
   echo "Nah"
