@@ -22,6 +22,10 @@ if(!dir.exists(libpath)){
 
 libpath <- normalizePath(libpath)
 
+if(!libpath %in% .libPaths()){
+  .libPaths(libpath)
+}
+
 # Check if remotes is installed
 if(!require(remotes)){
   utils::install.packages(
